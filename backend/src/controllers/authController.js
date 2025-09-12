@@ -38,6 +38,7 @@ export const RegisterUser = async (req, res) => {
         id: newUser._id,
         userName: newUser.userName,
         email: newUser.email,
+        role : newUser.role
       },
     });
   } catch (error) {
@@ -84,6 +85,7 @@ export const LoginUser = async (req, res) => {
         id: existingUser._id,
         userName: existingUser.userName,
         email: existingUser.email,
+        role : existingUser.role
       },
     });
   } catch (error) {
@@ -121,4 +123,48 @@ export const getProfile = (req, res) => {
       res.status(500).json({message : "Server Error"})
   }
 
+}
+
+
+export const updateUserProfile = async (req,res) => {
+  try {
+    const user = await User.findById(req.user.id)
+
+    if(!user){
+      return res.status(404).json({message : "User not found"})
+    }
+
+    const {userName, email} = req.body
+
+    // creating object to store updatedInfo
+    const updatedData = {}
+    if(userName !== undefined) updatedData.userName = userName
+    if (email !== undefined) updatedData.email = email 
+
+    // checking if email id is already taken by another user
+    if (email && email !== user.email){
+      const existingUser = await User.findOne({email})
+      if (existingUser){
+        return res.status(400).json({message : "Email is already in use"})
+      }
+    }
+
+    const updateUser = await User.findByIdAndUpdate(
+      req.user.id,
+      updatedData,
+      {new : true, runValidators: true}
+    ).select('-password')
+
+    res.status(200).json({
+      message : "profile update successfully",
+      user:{
+        id : updateUser._id,
+        userName : updateUser.userName,
+        email : updateUser.email,
+        role : updateUser.role
+      }
+    })
+  } catch (error) {
+    
+  }
 }
