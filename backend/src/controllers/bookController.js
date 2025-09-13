@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Book from "../models/bookSchema.js";
 
 export const CreateNovel = async (req, res) => {
@@ -59,7 +60,7 @@ export const CreateNovel = async (req, res) => {
 
 
 
-export const getBooks = async (req,res) => {
+export const GetBooks = async (req,res) => {
   try {
      
     const query = {}
@@ -90,5 +91,31 @@ export const getBooks = async (req,res) => {
   } catch (error) {
     console.error("Get Books Error:" ,error)
     res.status(500).json({message : " Server Error while fetching Books"})
+  }
+}
+
+export const GetBookById = async (req,res) =>{
+  try {
+    const {id} = req.params
+
+    // checking if id is valid mongodb objectId
+
+    if (!mongoose.Types.ObjectId.isValid(id)){
+      return res.status(400).json({message : "Invalid book Id format"})
+    }
+
+    const book = await Book.findById(id)
+
+    if (!book){
+      return res.status(404).json({message : "Book not found"})
+    }
+
+    res.status(200).json({
+      message : "Book fetched Successfully",
+      book : book
+    })
+  } catch (error) {
+     console.error("Get Book by ID error:", error)
+     res.status(500).json({message : "Server error"})
   }
 }
