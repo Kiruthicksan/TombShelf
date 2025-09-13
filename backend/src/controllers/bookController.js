@@ -56,3 +56,39 @@ export const CreateNovel = async (req, res) => {
     res.status(500).json({error : "Something went wront"})
   }
 };
+
+
+
+export const getBooks = async (req,res) => {
+  try {
+     
+    const query = {}
+
+    if (req.query.category){
+      query.category = req.query.category
+    }
+
+    if (req.query.genre){
+      query.genre = req.query.genre
+    }
+
+    if (req.query.seriesTitle){
+      query.seriesTitle = req.query.seriesTitle
+    }
+
+    const books = await Book.find(query)
+
+    // counting books 
+
+    const totalBook = await Book.countDocuments(query)
+
+    res.status(200).json({
+      message : "Books fetched Successfully",
+      count : totalBook,
+      book : books
+    })
+  } catch (error) {
+    console.error("Get Books Error:" ,error)
+    res.status(500).json({message : " Server Error while fetching Books"})
+  }
+}
