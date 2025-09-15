@@ -4,6 +4,7 @@ import cors from 'cors'
 import ConnectDb from './src/config/db.js'
 import authRoutes from './src/routes/authRoutes.js'
 import bookRoutes from './src/routes/bookRoutes.js'
+import orderRoutes from './src/routes/orderRoutes.js'
 import cookieParser from 'cookie-parser'
 dotenv.config()
 
@@ -19,6 +20,7 @@ app.use(cookieParser())
 
 app.use('/api', authRoutes)
 app.use('/api', bookRoutes)
+app.use('/api', orderRoutes)
 
 async function connection() {
     try {
