@@ -5,7 +5,7 @@ import ConnectDb from './src/config/db.js'
 import authRoutes from './src/routes/authRoutes.js'
 import bookRoutes from './src/routes/bookRoutes.js'
 import orderRoutes from './src/routes/orderRoutes.js'
-import collectionRoute from './src/routes/collectionRoutes.js'
+import cartRoutes from './src/routes/cartRoutes.js'
 import cookieParser from 'cookie-parser'
 dotenv.config()
 
@@ -22,7 +22,7 @@ app.use(cookieParser())
 app.use('/api', authRoutes)
 app.use('/api', bookRoutes)
 app.use('/api', orderRoutes)
-app.use('/api', collectionRoute)
+app.use('/api', cartRoutes)
 
 async function connection() {
     try {
