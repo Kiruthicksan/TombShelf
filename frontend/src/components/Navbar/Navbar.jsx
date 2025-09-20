@@ -14,6 +14,7 @@ const Navbar = () => {
   const dropDownRef = useRef(null)
   useOutsideClick(dropDownRef, () => setIsMobileMenuOpen(false))
 
+
   const navLinkClasses = ({ isActive }) =>
     `block px-4 py-2 rounded-lg transition-colors duration-200 ${
       isActive ? "text-[#3498DB] font-medium" : "text-[#2C3E50]"
@@ -82,6 +83,8 @@ const Navbar = () => {
             )}
           </div>
         </div>
+
+        
       </nav>
 
       {/* Mobile Menu */}
