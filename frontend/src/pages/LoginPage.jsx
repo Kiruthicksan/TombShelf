@@ -7,13 +7,13 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState("");
-  const [showPassword, setShowPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
 
-  const handleValidaton = () => {
+  const handleValidation = () => {
     if (!email.trim()) {
       setErrorMessage("Email is Required");
       return false;
@@ -29,13 +29,13 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!handleValidaton()) return;
+    if (!handleValidation()) return;
     setIsLoading(true);
     try {
       await login(email, password);
       navigate("/");
     } catch (error) {
-      setErrorMessage(errorMessage || "Something Went Wrong");
+      setErrorMessage(error.message|| "Something Went Wrong");
     } finally {
       setIsLoading(false);
     }
@@ -83,6 +83,23 @@ const LoginPage = () => {
             )}
           </span>
         </div>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className={`w-full py-3 rounded-lg font-semibold text-white transition ${
+            isLoading
+              ? "bg-blue-300 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
+        >
+          {isLoading ? "Logging In" : "LogIn"}
+        </button>
+
+        <p className="text-sm text-gray-500 mt-4 text-center">
+            Already have an account?
+            <span className="text-blue-500 cursor-pointer hover:underline pl-1" onClick={() => navigate("/register")}>Register</span>
+        </p>
       </form>
     </div>
   );
