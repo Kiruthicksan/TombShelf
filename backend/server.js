@@ -23,6 +23,7 @@ app.use('/api', authRoutes)
 app.use('/api', bookRoutes)
 app.use('/api', orderRoutes)
 app.use('/api', cartRoutes)
+app.use("/uploads",express.static("uploads"))
 
 async function connection() {
     try {

@@ -21,8 +21,7 @@ export const CreateNovel = async (req, res) => {
       !description ||
       !price ||
       !category ||
-      !genre ||
-      !image
+      !genre
     ) {
       return res.status(400).json({ message: "All feilds are required" });
     }
@@ -34,7 +33,7 @@ export const CreateNovel = async (req, res) => {
       price,
       category,
       genre,
-      image,
+      image : req.file ? req.file.path : "defalut-cover.jpg",
       volumeNumber,
       seriesTitle,
       addedBy: req.user.id,
@@ -138,6 +137,8 @@ export const UpdateBooks = async (req, res) => {
         });
     }
 
+
+
     const {
       title,
       author,
@@ -154,6 +155,7 @@ export const UpdateBooks = async (req, res) => {
 
     const updateData = {};
 
+    
     if (title !== undefined) updateData.title = title;
     if (author !== undefined) updateData.author = author;
     if (description !== undefined) updateData.description = description;
