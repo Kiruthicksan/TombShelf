@@ -61,6 +61,10 @@ export const useAuthStore = create((set) => ({
   logout : async () => {
     try {
       await api.post('/auth/logout')
+      set({
+        user: null,
+        isAuthenticated: false
+      })
     } catch (error) {
       set({ error: error.response?.data?.message || error.message });
     }

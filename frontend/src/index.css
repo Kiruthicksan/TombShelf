@@ -5,3 +5,16 @@ body {
   background-color: #ecf0f1;
   font-family: "Poppins", sans-serif;
 }
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out forwards;
+}

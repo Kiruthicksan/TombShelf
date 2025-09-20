@@ -4,6 +4,8 @@ import Navbar from "./components/Navbar/Navbar"
 
 import Register from "./pages/Register"
 import LoginPage from "./pages/LoginPage"
+import { useAuthStore } from "./store/store"
+import { useEffect } from "react"
 
 const MainLayout = ({children}) => {
   return(
@@ -14,6 +16,12 @@ const MainLayout = ({children}) => {
   )
 }
 const App = () => {
+
+  const fetchUser = useAuthStore((state => state.fetchUser))
+
+  useEffect(() => {
+    fetchUser()
+  },[])
   return (
     <BrowserRouter>
    

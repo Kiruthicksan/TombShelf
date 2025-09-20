@@ -1,9 +1,11 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import TomeshelfLogo from "../../assets/TomeshelfLogo 1.png";
 import { CgProfile } from "react-icons/cg";
 import { HiMenu, HiOutlineSearch } from "react-icons/hi";
 import { useRef, useState } from "react";
 import useOutsideClick from "../hooks/useOutsideClick";
+import { useAuthStore } from "../../store/store";
+import { use } from "react";
 
 const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -11,9 +13,12 @@ const Navbar = () => {
   useOutsideClick(profileRef, () => setIsProfileOpen(false));
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const dropDownRef = useRef(null)
-  useOutsideClick(dropDownRef, () => setIsMobileMenuOpen(false))
+  const dropDownRef = useRef(null);
+  useOutsideClick(dropDownRef, () => setIsMobileMenuOpen(false));
 
+  const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const logout = useAuthStore((state) => state.logout);
 
   const navLinkClasses = ({ isActive }) =>
     `block px-4 py-2 rounded-lg transition-colors duration-200 ${
@@ -26,7 +31,11 @@ const Navbar = () => {
         {/* Left: Logo */}
         <div className="flex items-center gap-10">
           <NavLink to="/">
-            <img src={TomeshelfLogo} alt="Tomeshelf Logo" className="h-[28px]" />
+            <img
+              src={TomeshelfLogo}
+              alt="Tomeshelf Logo"
+              className="h-[28px]"
+            />
           </NavLink>
 
           <div className="relative hidden md:flex">
@@ -39,16 +48,19 @@ const Navbar = () => {
           </div>
         </div>
 
-          
-
         {/* Center: Nav links + Search (desktop only) */}
         <div className="hidden md:flex flex-1 items-center justify-center">
           <div className="flex gap-3">
-            <NavLink to="/" className={navLinkClasses}>Home</NavLink>
-            <NavLink to="/genres" className={navLinkClasses}>Genres</NavLink>
-            <NavLink to="/category" className={navLinkClasses}>Category</NavLink>
+            <NavLink to="/" className={navLinkClasses}>
+              Home
+            </NavLink>
+            <NavLink to="/genres" className={navLinkClasses}>
+              Genres
+            </NavLink>
+            <NavLink to="/category" className={navLinkClasses}>
+              Category
+            </NavLink>
           </div>
-        
         </div>
 
         {/* Right: Profile + Mobile menu */}
@@ -67,24 +79,49 @@ const Navbar = () => {
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-[#BDC3C7]/50 text-[#2C3E50] transition-colors duration-200 hover:bg-[#BDC3C7]"
             >
-              <CgProfile className="h-6 w-6" />
+              { isAuthenticated ? user.userName.charAt(0).toUpperCase() : <CgProfile className="h-6 w-6" />}
             </button>
             {isProfileOpen && (
               <div className="absolute right-0 top-12 w-44 rounded-lg border border-gray-200 bg-white shadow-lg transition-all duration-200">
                 <ul className="flex flex-col text-sm text-[#2C3E50]">
-                  <li>
-                    <NavLink to="/login" className={navLinkClasses}>Login</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/register" className={navLinkClasses}>Register</NavLink>
-                  </li>
+                  {isAuthenticated ? (
+                    <>
+                      <li>
+                        <NavLink to="/profile" className={navLinkClasses}>
+                          Profile
+                        </NavLink>
+                      </li>
+                      <li>
+                        <button
+                          onClick={async () => {
+                            await logout();
+                            navigate("/login");
+                          }}
+                          className="pl-4 hover:bg-[#ECF0F1] w-full py-2 text-left"
+                        >
+                          Logout
+                        </button>
+                      </li>
+                    </>
+                  ) : (
+                    <>
+                      <li>
+                        <NavLink to="/login" className={navLinkClasses}>
+                          Login
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink to="/register" className={navLinkClasses}>
+                          Register
+                        </NavLink>
+                      </li>
+                    </>
+                  )}
                 </ul>
               </div>
             )}
           </div>
         </div>
-
-        
       </nav>
 
       {/* Mobile Menu */}
@@ -97,10 +134,15 @@ const Navbar = () => {
               className="w-full h-10 rounded-lg border border-[#BDC3C7] px-4 text-sm outline-none placeholder:text-[#BDC3C7] focus:border-[#3498DB]"
             />
           </div>
-          <NavLink to="/" className={navLinkClasses}>Home</NavLink>
-          <NavLink to="/genres" className={navLinkClasses}>Genres</NavLink>
-          <NavLink to="/category" className={navLinkClasses}>Category</NavLink>
-        
+          <NavLink to="/" className={navLinkClasses}>
+            Home
+          </NavLink>
+          <NavLink to="/genres" className={navLinkClasses}>
+            Genres
+          </NavLink>
+          <NavLink to="/category" className={navLinkClasses}>
+            Category
+          </NavLink>
         </div>
       )}
     </header>

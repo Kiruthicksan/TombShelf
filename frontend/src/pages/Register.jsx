@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const Register = () => {
-
-    //  used default forms for my pratcie .
+  //  used default forms for my pratcie .
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -72,7 +71,9 @@ const Register = () => {
         </h2>
 
         {errorMessage && (
-          <p className="text-red-500 text-sm mb-4 text-center">{errorMessage}</p>
+          <p className="text-red-500 text-sm mb-4 text-center">
+            {errorMessage}
+          </p>
         )}
 
         <input
@@ -104,7 +105,11 @@ const Register = () => {
             onClick={() => setShowPassword(!showPassword)}
             aria-label={showPassword ? "Hide Password" : "Show Password"}
           >
-            {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+            {showPassword ? (
+              <AiOutlineEyeInvisible size={20} />
+            ) : (
+              <AiOutlineEye size={20} />
+            )}
           </span>
         </div>
 
@@ -122,7 +127,10 @@ const Register = () => {
 
         <p className="text-sm text-gray-500 mt-4 text-center">
           Already have an account?{" "}
-          <span className="text-blue-500 cursor-pointer hover:underline pl-1" onClick={() => navigate("/login")}>
+          <span
+            className="text-blue-500 cursor-pointer hover:underline pl-1"
+            onClick={() => navigate("/login")}
+          >
             Login
           </span>
         </p>
