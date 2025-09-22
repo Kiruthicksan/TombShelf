@@ -115,9 +115,13 @@ export const getProfile = (req, res) => {
       const user = req.user
 
       res.status(200).json({
-         id : user._id,
+        message : "Profile fetchec Succsfully",
+        user : {
+          id : user._id,
          userName : user.userName,
          email : user.email
+        }
+         
       })
   } catch (error) {
       res.status(500).json({message : "Server Error"})

@@ -30,6 +30,11 @@ const bookSchema = new mongoose.Schema({
         type : String,
         required : true
     },
+    status: {
+        type : String,
+        required : true,
+        enum : ["released", "upcoming"]
+    },
     image: {
         type :String,
         default : "default-cover.jpg"
