@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { api } from "../services/api.js";
 
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set, get) => ({
   user: null,
   isAuthenticated: false,
   isLoading: null,
@@ -25,13 +25,16 @@ export const useAuthStore = create((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.post("/auth/login", { email, password });
-      set({
-        user: response.data.user,
-        isAuthenticated: true,
-        isLoading: false,
-      });
-
-      return response.data;
+      if (response?.data?.user) {
+        set({
+          user: response.data.user,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+        return response.data;
+      } else {
+        throw new Error(res.data.message || "Invalid credentials");
+      }
     } catch (error) {
       set({
         error: error.response?.data?.message || error.message,
@@ -58,17 +61,29 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  logout : async () => {
+  logout: async () => {
     try {
-      await api.post('/auth/logout')
+      await api.post("/auth/logout");
       set({
         user: null,
-        isAuthenticated: false
-      })
+        isAuthenticated: false,
+      });
     } catch (error) {
       set({ error: error.response?.data?.message || error.message });
     }
-  }
+  },
+
+  hasRole: (role) => {
+    const {user} = get()
+    return user?.role === role;
+  },
+
+  hasAnyrole: (roles = []) => {
+    const {user} = get()
+    return roles.includes(user?.role);
+  },
+
+  isReader:() =>  get().user?.role === "reader",
+  isPublisher: () =>  get().user?.role === "publisher",
+  isAdmin: () =>  get().user?.role === "admin",
 }));
-
-
