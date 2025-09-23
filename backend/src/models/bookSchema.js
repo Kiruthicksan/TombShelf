@@ -40,10 +40,7 @@ const bookSchema = new mongoose.Schema({
         default : "default-cover.jpg"
     },
 
-    volumeNumber: {
-        type : Number,
-        required : function() {return this.category !== 'book'}
-    },
+   
     seriesTitle: {
         type : String
     },

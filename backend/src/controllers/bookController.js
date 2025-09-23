@@ -10,20 +10,13 @@ export const CreateNovel = async (req, res) => {
       price,
       category,
       genre,
-      image,
-      volumeNumber,
+      status,
+    
       seriesTitle,
     } = req.body;
 
-    if (
-      !title ||
-      !author ||
-      !description ||
-      !price ||
-      !category ||
-      !genre
-    ) {
-      return res.status(400).json({ message: "All feilds are required" });
+    if (!title || !author || !description || !price || !category || !genre || !status) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
     const newBook = await Book.create({
@@ -33,8 +26,8 @@ export const CreateNovel = async (req, res) => {
       price,
       category,
       genre,
-      image : req.file ? req.file.path : "defalut-cover.jpg",
-      volumeNumber,
+      status,
+      image: req.file ? `/uploads/${req.file.filename}` : "/uploads/default-cover.jpg",
       seriesTitle,
       addedBy: req.user.id,
     });
@@ -43,13 +36,14 @@ export const CreateNovel = async (req, res) => {
   } catch (error) {
     console.error("Error: ", error);
 
-    if ((error.name = "ValidationError")) {
-      return res.status(400).json({ message: "validation Error" });
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: "Validation Error" });
     }
 
-    res.status(500).json({ error: "Something went wront" });
+    res.status(500).json({ error: "Something went wrong" });
   }
 };
+
 
 export const GetBooks = async (req, res) => {
   try {
@@ -67,6 +61,10 @@ export const GetBooks = async (req, res) => {
       query.seriesTitle = req.query.seriesTitle;
     }
 
+    if (req.query.status){
+      query.status = req.query.status
+    }
+
     const books = await Book.find(query);
 
     // counting books
@@ -76,7 +74,7 @@ export const GetBooks = async (req, res) => {
     res.status(200).json({
       message: "Books fetched Successfully",
       count: totalBook,
-      book: books,
+      books: books,
     });
   } catch (error) {
     console.error("Get Books Error:", error);
