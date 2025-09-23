@@ -3,7 +3,6 @@ import { useAuthStore } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
-
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,13 +29,17 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!handleValidation()) return;
+
+     if (!handleValidation()) return;
+    setIsLoading(true);
+    setErrorMessage("");
+   
     setIsLoading(true);
     try {
       await login(email, password);
       navigate("/");
     } catch (error) {
-      setErrorMessage(error.message|| "Something Went Wrong");
+      setErrorMessage(error.message || "Something Went Wrong");
     } finally {
       setIsLoading(false);
     }
@@ -98,8 +101,13 @@ const LoginPage = () => {
         </button>
 
         <p className="text-sm text-gray-500 mt-4 text-center">
-            Already have an account?
-            <span className="text-blue-500 cursor-pointer hover:underline pl-1" onClick={() => navigate("/register")}>Register</span>
+          Already have an account?
+          <span
+            className="text-blue-500 cursor-pointer hover:underline pl-1"
+            onClick={() => navigate("/register")}
+          >
+            Register
+          </span>
         </p>
       </form>
     </div>

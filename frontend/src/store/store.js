@@ -23,25 +23,39 @@ export const useAuthStore = create((set, get) => ({
   },
   login: async (email, password) => {
     set({ isLoading: true, error: null });
+
     try {
       const response = await api.post("/auth/login", { email, password });
-      if (response?.data?.user) {
+
+      // Check if the login was successful based on your API's response structure
+      if (response.data && response.data.user) {
         set({
           user: response.data.user,
           isAuthenticated: true,
           isLoading: false,
+          error: null,
         });
-        return response.data;
+        return response.data.user; // only return on success
       } else {
-        throw new Error(res.data.message || "Invalid credentials");
+        throw new Error(response.data.message || "Invalid credentials");
       }
     } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "An unknown error occurred.";
+
       set({
-        error: error.response?.data?.message || error.message,
+        user: null,
+        isAuthenticated: false,
+        error: errorMessage,
         isLoading: false,
       });
+
+      throw new Error(errorMessage);
     }
   },
+
   fetchUser: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -73,17 +87,36 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  updateUser: async (payload) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await api.put("/users/profile", payload);
+      set({
+        user: response.data.user,
+        isLoading: false,
+        error: null,
+      });
+
+      return response.data.user;
+    } catch (error) {
+      const errorMesage =
+        error.response.data.message || error.message || "Update Failed";
+      set({ error: errorMesage, isLoading: false });
+    }
+    throw new Error(errorMessage);
+  },
+
   hasRole: (role) => {
-    const {user} = get()
+    const { user } = get();
     return user?.role === role;
   },
 
   hasAnyrole: (roles = []) => {
-    const {user} = get()
+    const { user } = get();
     return roles.includes(user?.role);
   },
 
-  isReader:() =>  get().user?.role === "reader",
-  isPublisher: () =>  get().user?.role === "publisher",
-  isAdmin: () =>  get().user?.role === "admin",
+  isReader: () => get().user?.role === "reader",
+  isPublisher: () => get().user?.role === "publisher",
+  isAdmin: () => get().user?.role === "admin",
 }));

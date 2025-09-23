@@ -18,7 +18,7 @@ const Navbar = () => {
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isReader = useAuthStore((state) => state.isReader);
-  const logout = useAuthStore((state) => state.logout)
+  const logout = useAuthStore((state) => state.logout);
 
   const navLinkClasses = ({ isActive }) =>
     `block px-4 py-2 rounded-lg transition-colors duration-200 ${
@@ -27,12 +27,13 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-       await logout()
+      await logout();
     } catch (error) {
-        console.error("Logout failed:", error)
+      console.error("Logout failed:", error);
     }
-   
   };
+
+  const handleClose = () => setIsProfileOpen(false)
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#ECF0F1] shadow-md">
@@ -103,18 +104,26 @@ const Navbar = () => {
                         <>
                           {" "}
                           <li>
-                            <NavLink to="/profile" className={navLinkClasses}>
+                            <NavLink
+                              to="/profile"
+                              className={navLinkClasses}
+                              onClick={handleClose }
+                            >
                               Profile
                             </NavLink>
                           </li>
                           <li>
-                            <NavLink to="/orders" className={navLinkClasses}>
+                            <NavLink
+                              to="/orders"
+                              className={navLinkClasses}
+                              onClick={handleClose }
+                            >
                               Orders
                             </NavLink>
                           </li>
                           <button
                             className="text-left px-4 hover:bg-[#ECF0F1]  py-2 rounded-lg transition-colors duration-200 hover:text-[#3498DB]"
-                            onClick={handleLogout}
+                            onClick={() => {handleLogout(); handleClose()}}
                           >
                             LogOut
                           </button>
