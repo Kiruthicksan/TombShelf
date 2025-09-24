@@ -4,7 +4,7 @@ import { api } from "../services/api.js";
 export const useAuthStore = create((set, get) => ({
   user: null,
   isAuthenticated: false,
-  isLoading: false,
+  isLoading: true,
   error: null,
 
   register: async (userName, email, password) => {

@@ -23,9 +23,7 @@ const ManageBooks = () => {
   const books = useBookStore(state => state.books)
   const fetchBooks = useBookStore((state) => state.fetchBooks)
 
-  useEffect(() => {
-      fetchBooks()
-    }, [])
+
 
   const [category,setCategory] = useState("")
  const categories = [...new Set(books.map((book) => book.category))];
@@ -73,10 +71,15 @@ const ManageBooks = () => {
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem>Manga</SelectItem>
-                <SelectItem>Comics</SelectItem>
+                 {categories.map(category => (
+                  <SelectItem key={category} value = {category}>{category}</SelectItem>
+                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="rounded-md border">
+            
           </div>
         </CardContent>
       </Card>

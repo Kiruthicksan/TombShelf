@@ -4,7 +4,7 @@ import { api } from "../services/api";
 export const useBookStore = create((set, get) => ({
   books: [],
   book: null,
-  isLoaading: false,
+  isLoading: true,
   error: false,
 
  fetchBooks: async (query = {}) => {
@@ -14,6 +14,7 @@ export const useBookStore = create((set, get) => ({
     const params = new URLSearchParams(query).toString();
     const response = await api.get(`/books?${params}`);
     set({ books: response.data.books, isLoading: false });
+    return response.data.books
   } catch (error) {
     set({ error: error.response?.data?.message || error.message, isLoading: false });
   }
@@ -26,6 +27,7 @@ export const useBookStore = create((set, get) => ({
     try {
         const response = await api.get(`/books/${id}`)
         set({book :response.data.book, isLoading : false})
+        return response.data.book
     } catch (error) {
         set({ error: error.response?.data?.message || error.message, isLoading: false });
     }

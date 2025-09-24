@@ -17,7 +17,8 @@ const Navbar = () => {
 
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
- 
+   const isAdmin = useAuthStore(state => state.user?.role === 'admin');
+
   const logout = useAuthStore((state) => state.logout);
 
   const navLinkClasses = ({ isActive }) =>
@@ -67,13 +68,14 @@ const Navbar = () => {
             <NavLink to="/genres" className={navLinkClasses}>
               Genres
             </NavLink>
-            
-          
+
+            {isAuthenticated && isAdmin && (
+              <>
                 <NavLink to="/manage-books" className={navLinkClasses}>
                   Manage Books
                 </NavLink>
-            
-          
+              </>
+            )}
           </div>
         </div>
 
