@@ -17,7 +17,7 @@ const Navbar = () => {
 
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const isReader = useAuthStore((state) => state.isReader);
+ 
   const logout = useAuthStore((state) => state.logout);
 
   const navLinkClasses = ({ isActive }) =>
@@ -33,7 +33,7 @@ const Navbar = () => {
     }
   };
 
-  const handleClose = () => setIsProfileOpen(false)
+  const handleClose = () => setIsProfileOpen(false);
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#ECF0F1] shadow-md">
@@ -60,16 +60,20 @@ const Navbar = () => {
 
         {/* Center: Nav links + Search (desktop only) */}
         <div className="hidden md:flex flex-1 items-center justify-center">
-          <div className="flex gap-3">
+          <div className="flex">
             <NavLink to="/" className={navLinkClasses}>
               Home
             </NavLink>
             <NavLink to="/genres" className={navLinkClasses}>
               Genres
             </NavLink>
-            <NavLink to="/category" className={navLinkClasses}>
-              Category
-            </NavLink>
+            
+          
+                <NavLink to="/manage-books" className={navLinkClasses}>
+                  Manage Books
+                </NavLink>
+            
+          
           </div>
         </div>
 
@@ -100,35 +104,33 @@ const Navbar = () => {
                 <ul className="flex flex-col text-sm text-[#2C3E50]">
                   {isAuthenticated ? (
                     <>
-                      {isReader && (
-                        <>
-                          {" "}
-                          <li>
-                            <NavLink
-                              to="/profile"
-                              className={navLinkClasses}
-                              onClick={handleClose }
-                            >
-                              Profile
-                            </NavLink>
-                          </li>
-                          <li>
-                            <NavLink
-                              to="/orders"
-                              className={navLinkClasses}
-                              onClick={handleClose }
-                            >
-                              Orders
-                            </NavLink>
-                          </li>
-                          <button
-                            className="text-left px-4 hover:bg-[#ECF0F1]  py-2 rounded-lg transition-colors duration-200 hover:text-[#3498DB]"
-                            onClick={() => {handleLogout(); handleClose()}}
-                          >
-                            LogOut
-                          </button>
-                        </>
-                      )}
+                      <li>
+                        <NavLink
+                          to="/profile"
+                          className={navLinkClasses}
+                          onClick={handleClose}
+                        >
+                          Profile
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to="/orders"
+                          className={navLinkClasses}
+                          onClick={handleClose}
+                        >
+                          Orders
+                        </NavLink>
+                      </li>
+                      <button
+                        className="text-left px-4 hover:bg-[#ECF0F1]  py-2 rounded-lg transition-colors duration-200 hover:text-[#3498DB]"
+                        onClick={() => {
+                          handleLogout();
+                          handleClose();
+                        }}
+                      >
+                        LogOut
+                      </button>
                     </>
                   ) : (
                     <>

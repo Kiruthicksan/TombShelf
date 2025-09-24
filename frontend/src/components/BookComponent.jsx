@@ -15,13 +15,14 @@ const BookComponent = () => {
   // create a array for storing categories
 
   const categories = [...new Set(books.map((book) => book.category))];
-  console.log(categories)
+
+  const categoriesHeadings = {manga : "Manga World", comics : "Comics Universe"}
   return (
     <section className="px-6 py-5  md:px-16">
       {categories.map((category) => (
-        <div key={category} className="mb-8">
-          <h1 className="text-xl font-bold text-[#E74C3C] mb-6">
-            {category.charAt(0).toUpperCase() + category.slice(1)}
+        <div key={category} className="mb-2">
+          <h1 className="text-2xl font-extrabold text-gray-800 mb-2 font-[Oswald] tracking-wider text-shadow-lg text-shadow-gray-400">
+            {categoriesHeadings[category]}
           </h1>
 
           <div className="flex gap-6 overflow-x-auto py-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-300">

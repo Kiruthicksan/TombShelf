@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home/Home";
 
+import Home from "./pages/Home/Home";
 import Register from "./pages/Register";
 import LoginPage from "./pages/LoginPage";
 import { useAuthStore } from "./store/store";
@@ -9,6 +9,8 @@ import Navbar from "./components/Navbar/Navbar";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import Unauthorized from "./pages/Unauthorized";
+import ManageBooks from "./pages/ManageBooks";
+
 
 const MainLayout = ({ children }) => {
   return (
@@ -23,10 +25,18 @@ const App = () => {
   const fetchUser = useAuthStore((state) => state.fetchUser);
 
   useEffect(() => {
-    fetchUser();
-  }, []);
+    const getUser = async () => {
+      const user = await fetchUser()
+      console.log(`FetchedUser:` , user)
+
+    }
+    getUser();
+  }, [fetchUser]);
+
+
 
   return (
+   
     <BrowserRouter>
       <Routes>
         {/* Pubic routes || pages */}
@@ -51,12 +61,21 @@ const App = () => {
           }
         />
 
+        <Route  path="/manage-books" element = {
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <MainLayout>
+              <ManageBooks />
+            </MainLayout>
+          </ProtectedRoute>
+        }/>
+
         {/* Pages without navbar */}
         <Route path="/register" element={<Register />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/unauthorized" element = {<Unauthorized />} />
       </Routes>
     </BrowserRouter>
+   
   );
 };
 export default App;

@@ -3,30 +3,37 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useBookStore } from "../store/useBookStore";
 import { getImageUrl } from "../utils/image";
 
-
 const HeroSection = () => {
   const fetchBooks = useBookStore((state) => state.fetchBooks);
   const books = useBookStore((state) => state.books);
 
+  const [upcomingBooks, setUpcomingBooks] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    fetchBooks();
+    const fetchUpcoming = async () => {
+      await fetchBooks({ status: "upcoming" }); // fetch books into store
+      const upcoming = useBookStore.getState().books.filter(
+        (book) => book.status === "upcoming"
+      );
+      setUpcomingBooks(upcoming);
+    };
+    fetchUpcoming();
   }, []);
 
-  // Auto-slide every n seconds
+  // Auto-slide
   useEffect(() => {
+    if (upcomingBooks.length === 0) return;
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % (books?.length || 1));
+      setCurrentIndex((prev) => (prev + 1) % upcomingBooks.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, [books]);
+  }, [upcomingBooks]);
 
-  const upComingBook = books.find(book => book.status === "upcoming");
+  const upComingBook = upcomingBooks[currentIndex] || null;
 
   return (
     <section className="relative min-h-[500px] grid grid-cols-1 md:grid-cols-2 items-center py-12 px-6 md:px-16 bg-gradient-to-r from-[#1A1A2E] via-[#16213E] to-[#0F3460] text-white overflow-hidden">
-      
       {/* Decorative gradient circles */}
       <div className="absolute -top-24 -left-24 w-80 h-80 bg-[#E74C3C]/20 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-0 w-72 h-72 bg-[#3498DB]/20 rounded-full blur-2xl"></div>
@@ -48,9 +55,15 @@ const HeroSection = () => {
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-3 drop-shadow-lg text-[#E74C3C]">
               {upComingBook.title}
             </h1>
-            <p className="text-sm md:text-base text-gray-300 mb-1">{upComingBook.author}</p>
-            <p className="text-sm md:text-base text-gray-200 mb-2">⭐ 4.8/5 from 200 early readers</p>
-            <p className="text-sm md:text-base text-gray-200 mb-6">📅 Releasing Sept 30, 2025</p>
+            <p className="text-sm md:text-base text-gray-300 mb-1">
+              {upComingBook.author}
+            </p>
+            <p className="text-sm md:text-base text-gray-200 mb-2">
+              ⭐ 4.8/5 from 200 early readers
+            </p>
+            <p className="text-sm md:text-base text-gray-200 mb-6">
+              📅 Releasing Sept 30, 2025
+            </p>
 
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -81,9 +94,9 @@ const HeroSection = () => {
         )}
       </div>
 
-     
+      {/* Dots */}
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2">
-        {books?.map((_, index) => (
+        {upcomingBooks.map((_, index) => (
           <span
             key={index}
             className={`w-3 h-3 rounded-full transition-all ${
@@ -95,4 +108,5 @@ const HeroSection = () => {
     </section>
   );
 };
+
 export default HeroSection;

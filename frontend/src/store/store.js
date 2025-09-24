@@ -4,7 +4,7 @@ import { api } from "../services/api.js";
 export const useAuthStore = create((set, get) => ({
   user: null,
   isAuthenticated: false,
-  isLoading: null,
+  isLoading: false,
   error: null,
 
   register: async (userName, email, password) => {
@@ -65,6 +65,7 @@ export const useAuthStore = create((set, get) => ({
         isAuthenticated: true,
         isLoading: false,
       });
+      return response.data.user
     } catch (error) {
       set({
         user: null,
@@ -72,6 +73,7 @@ export const useAuthStore = create((set, get) => ({
         error: error.response?.data?.message || error.message,
         isLoading: false,
       });
+      return  null
     }
   },
 
@@ -99,24 +101,15 @@ export const useAuthStore = create((set, get) => ({
 
       return response.data.user;
     } catch (error) {
-      const errorMesage =
+      const errorMessage =
         error.response.data.message || error.message || "Update Failed";
-      set({ error: errorMesage, isLoading: false });
+      set({ error: errorMessage, isLoading: false });
+      throw new Error(errorMessage);
     }
-    throw new Error(errorMessage);
   },
 
-  hasRole: (role) => {
-    const { user } = get();
-    return user?.role === role;
-  },
+ hasRole: (role) => get().user?.role === role,
+hasAnyRole: (roles = []) => roles.includes(get().user?.role),
 
-  hasAnyrole: (roles = []) => {
-    const { user } = get();
-    return roles.includes(user?.role);
-  },
 
-  isReader: () => get().user?.role === "reader",
-  isPublisher: () => get().user?.role === "publisher",
-  isAdmin: () => get().user?.role === "admin",
 }));
