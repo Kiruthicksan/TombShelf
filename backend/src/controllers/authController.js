@@ -115,11 +115,12 @@ export const getProfile = (req, res) => {
       const user = req.user
 
       res.status(200).json({
-        message : "Profile fetchec Succsfully",
+        message : "Profile fetchecd Succsfully",
         user : {
           id : user._id,
          userName : user.userName,
-         email : user.email
+         email : user.email,
+         role : user.role
         }
          
       })
