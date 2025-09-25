@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoutes";
 import Unauthorized from "./pages/Unauthorized";
 import ManageBooks from "./pages/ManageBooks";
 import { useBookStore } from "./store/useBookStore";
+import BookDetailsPage from "./pages/BookDetailsPage";
 
 const MainLayout = ({ children }) => {
   return (
@@ -51,6 +52,15 @@ const App = () => {
           element={
             <MainLayout>
               <Home />
+            </MainLayout>
+          }
+        />
+
+         <Route
+          path="/books/:id"
+          element={
+            <MainLayout>
+              <BookDetailsPage />
             </MainLayout>
           }
         />

@@ -2,11 +2,15 @@
 import { useEffect } from "react";
 import { useBookStore } from "../store/useBookStore";
 import { getImageUrl } from "../utils/image";
+import { useNavigate } from "react-router-dom";
+
 
 const BookComponent = () => {
   // book store
   const books = useBookStore((state) => state.books);
   const fetchBooks = useBookStore((state) => state.fetchBooks)
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchBooks()
@@ -32,6 +36,7 @@ const BookComponent = () => {
                 <div
                   key={book._id}
                   className="relative w-[200px] h-[280px] rounded-lg overflow-hidden shadow-lg group transition-opacity duration-300 hover:opacity-90"
+                 onClick={() => navigate((`/books/${book._id}`))}
                 >
                   <img src= {getImageUrl(book.image)} alt= {book.title} loading="lazy" />
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 to-black/40 px-3 py-3">
