@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Dialog,
@@ -28,9 +28,11 @@ const BookFrom = ({
   book,
   categories,
   status,
+  mode,
 }) => {
+  const createBook = useBookStore((state) => state.createBook);
+  const updateBook = useBookStore((state) => state.updateBook);
 
-  const createBook = useBookStore(state => state.createBook)
   const [formData, setFormData] = useState({
     title: "",
     author: "",
@@ -41,39 +43,104 @@ const BookFrom = ({
     status: "",
     image: "",
   });
+  const [errors, setErrors] = useState({});
+
+  // render based on mode
+
+  useEffect(() => {
+    if (book && mode === "edit") {
+      setFormData({
+        title: book.title,
+        author: book.author,
+        description: book.description,
+        category: book.category,
+        genre: book.genre,
+        price: book.price,
+        status: book.status,
+        image: book.image,
+      });
+    } else {
+      setFormData({
+        title: "",
+        author: "",
+        description: "",
+        category: "",
+        genre: "",
+        price: "",
+        status: "",
+        image: "",
+      });
+    }
+  }, [book, mode, open]);
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.title.trim()) errors.title = "Title is required";
+    if (!formData.author.trim()) errors.author = "Author is required";
+    if (
+      !formData.price ||
+      isNaN(formData.price) ||
+      parseFloat(formData.price) <= 0
+    )
+      errors.price = "Price must be a positive number";
+    if (!formData.category) errors.category = "Category is required";
+    if (!formData.genre) errors.genre = "Genre is required";
+    if (!formData.status) errors.status = "Status is required";
+    if (!formData.image) errors.image = "Image is required";
+    if (!formData.description.trim())
+      errors.description = "Description is required";
+    return errors;
+  };
 
   const handleChange = (feild, value) => {
     setFormData((prev) => ({ ...prev, [feild]: value }));
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    const validatiionErrors = validateForm();
+    if (Object.keys(validatiionErrors).length > 0) {
+      setErrors(validatiionErrors);
+      return;
+    }
     try {
-      await createBook({...formData, price : parseFloat(formData.price)})
-      onOpenChange(false)
-       setFormData({
-      title: "",
-      author: "",
-      description: "",
-      category: "",
-      genre: "",
-      price: "",
-      status: "",
-      image: "",
-    });
+      if (mode === "edit" && book) {
+        await updateBook(book._id, {
+          ...formData,
+          price: parseFloat(formData.price),
+        });
+      } else {
+        await createBook({ ...formData, price: parseFloat(formData.price) });
+      }
+
+      onOpenChange(false);
+      setFormData({
+        title: "",
+        author: "",
+        description: "",
+        category: "",
+        genre: "",
+        price: "",
+        status: "",
+        image: "",
+      });
+      setErrors({});
     } catch (error) {
       console.error(error);
-      
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Add New Book</DialogTitle>
+          <DialogTitle>
+            {mode === "add" ? "Add New Book" : "Edit Book"}
+          </DialogTitle>
           <DialogDescription>
-            Enter the Details for the new book to ad to your Inventory
+            {mode === "add"
+              ? "  Enter the Details for the new book to ad to your Inventory"
+              : "Update the book information below"}
           </DialogDescription>
         </DialogHeader>
 
@@ -87,6 +154,9 @@ const BookFrom = ({
                 value={formData.title}
                 onChange={(e) => handleChange("title", e.target.value)}
               />
+              {errors.title && (
+                <p className="text-red-500 text-sm">{errors.title}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label>Author *</Label>
@@ -96,6 +166,9 @@ const BookFrom = ({
                 value={formData.author}
                 onChange={(e) => handleChange("author", e.target.value)}
               />
+              {errors.author && (
+                <p className="text-red-500 text-sm">{errors.author}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label>Price (₹) *</Label>
@@ -107,6 +180,9 @@ const BookFrom = ({
                 onChange={(e) => handleChange("price", e.target.value)}
                 placeholder="₹ 1"
               />
+              {errors.price && (
+                <p className="text-red-500 text-sm">{errors.price}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -127,6 +203,10 @@ const BookFrom = ({
                   ))}
                 </SelectContent>
               </Select>
+
+              {errors.category && (
+                <p className="text-red-500 text-sm">{errors.category}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label>Genre *</Label>
@@ -144,14 +224,14 @@ const BookFrom = ({
                   </SelectItem>
                   <SelectItem value="Mystery">Mystery</SelectItem>
                   <SelectItem value="Romance">Romance</SelectItem>
-                  <SelectItem value="Non-Fiction">Non-Fiction</SelectItem>
-                   <SelectItem value="SuperHero">SuperHero</SelectItem>
-                  <SelectItem value="Biography">Biography</SelectItem>
-                  <SelectItem value="History">History</SelectItem>
-                  <SelectItem value="Self-Help">Self-Help</SelectItem>
-                  <SelectItem value="Children">Children</SelectItem>
+
+                  <SelectItem value="SuperHero">SuperHero</SelectItem>
+                  <SelectItem value="Shonen Manga">Shonen Manga</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.genre && (
+                <p className="text-red-500 text-sm">{errors.genre}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -171,6 +251,9 @@ const BookFrom = ({
                   ))}
                 </SelectContent>
               </Select>
+              {errors.status && (
+                <p className="text-red-500 text-sm">{errors.status}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -180,6 +263,9 @@ const BookFrom = ({
                 id="image"
                 onChange={(e) => handleChange("image", e.target.files[0])}
               />
+              {errors.image && (
+                <p className="text-red-500 text-sm">{errors.image}</p>
+              )}
             </div>
           </div>
           <div className="space-y-2 ">
@@ -192,6 +278,9 @@ const BookFrom = ({
               rows={3}
               className="resize-none"
             />
+            {errors.description && (
+              <p className="text-red-500 text-sm">{errors.description}</p>
+            )}
           </div>
           <DialogFooter>
             <Button
@@ -201,8 +290,8 @@ const BookFrom = ({
             >
               Cancel
             </Button>
-            <Button type ="submit">
-              Add Book
+            <Button type="submit">
+              {mode === "add" ? "Add Book" : "Update Book"}
             </Button>
           </DialogFooter>
         </form>

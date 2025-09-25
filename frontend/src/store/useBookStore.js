@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { api } from "../services/api";
 
-
 export const useBookStore = create((set, get) => ({
   books: [],
   book: null,
@@ -42,17 +41,17 @@ export const useBookStore = create((set, get) => ({
   createBook: async (data) => {
     set({ isLoading: true, error: null });
     try {
-      const form = new FormData()
-      for (const key in data) form.append(key, data[key])
+      const form = new FormData();
+      for (const key in data) form.append(key, data[key]);
       const response = await api.post("/books", form, {
-        headers : {"Content-Type"  : "multipart/form-data"},
-    });
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       set((state) => ({
         books: [...state.books, response.data.book],
         isLoading: false,
         error: null,
       }));
-      return response.data.book
+      return response.data.book;
     } catch (error) {
       set({
         error:
@@ -61,6 +60,54 @@ export const useBookStore = create((set, get) => ({
           "Error while publishing Book",
         isLoading: false,
       });
+    }
+  },
+
+  updateBook: async (id, data) => {
+    set({ isLoading: true, error: null });
+    try {
+      const form = new FormData();
+      for (const key in data) form.append(key, data[key]);
+      const response = await api.put(`/books/${id}`, form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      set((state) => ({
+        books: state.books.map((book) =>
+          book._id === id ? response.data.book : book
+        ),
+        isLoading: false,
+        error: null,
+      }));
+
+      return response.data.book;
+    } catch (error) {
+      set({
+        error:
+          error?.response?.data?.message ||
+          error.message ||
+          "Error while updating book",
+        isLoading: false,
+      });
+    }
+  },
+
+  deleteBook: async (bookId) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      await api.delete(`/books/${bookId}`);
+
+      set((state) => ({
+        books: state.books.filter((book) => book._id !== bookId),
+        isLoading: false,
+        error: null,
+      }));
+    } catch (error) {
+        set({
+      error: error?.response?.data?.message || error.message || "Error deleting book",
+      isLoading: false,
+    });
     }
   },
 }));

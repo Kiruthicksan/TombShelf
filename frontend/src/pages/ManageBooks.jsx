@@ -26,15 +26,36 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import BookFrom from "@/components/BookForm";
+import DeleteBookDialog from "@/components/DeleteBookDialog";
 
 const ManageBooks = () => {
+  // bookstore
   const books = useBookStore((state) => state.books);
 
-  const [category, setCategory] = useState("");
-  const [isAddDialogueOpen, setIsAddDialogueOpen] = useState(false)
+  // local states
+
+  const [isAddDialogueOpen, setIsAddDialogueOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [editingBook, setEditingBook] = useState(null);
+  const [deletingBook, setDeletingBook] = useState(null);
 
   const categories = [...new Set(books.map((book) => book.category))];
-  const status = [...new Set(books.map(book => book.status))]
+  const status = [...new Set(books.map((book) => book.status))];
+
+  // logic to search books based on search term , category
+
+  const filteredBooks = books.filter((book) => {
+    const search = searchTerm.trim().toLowerCase();
+    const matchedSearch =
+      book.title.toLowerCase().includes(search) ||
+      book.author.toLowerCase().includes(search);
+    const matchedCategory =
+      selectedCategory === "All" ||
+      book.category.toLowerCase() === selectedCategory.toLowerCase();
+    return matchedSearch && matchedCategory;
+  });
+
   return (
     <div className="space-y-10 px-10 py-5">
       {/* Header */}
@@ -50,7 +71,7 @@ const ManageBooks = () => {
           </p>
         </div>
         <div>
-          <Button onClick = {() => setIsAddDialogueOpen(true)}>
+          <Button onClick={() => setIsAddDialogueOpen(true)}>
             <Plus className="h-4 w-4" />
             Add Book
           </Button>
@@ -71,14 +92,21 @@ const ManageBooks = () => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2  h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Search by author or title"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
-            <Select value={category} onValueChange={setCategory}>
+            <Select
+              value={selectedCategory}
+              onValueChange={setSelectedCategory}
+            >
               <SelectTrigger className="w-full md:w-48">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
+
               <SelectContent>
+                <SelectItem value="All">All</SelectItem>
                 {categories.map((category) => (
                   <SelectItem key={category} value={category}>
                     {category}
@@ -101,14 +129,14 @@ const ManageBooks = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {books.length === 0 ? (
+                {filteredBooks.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8">
                       No Books found.
                     </TableCell>
                   </TableRow>
                 ) : (
-                  books.map((book) => (
+                  filteredBooks.map((book) => (
                     <TableRow key={book._id}>
                       <TableCell>{book.title}</TableCell>
                       <TableCell>{book.author}</TableCell>
@@ -120,10 +148,18 @@ const ManageBooks = () => {
                       <TableCell>{book.genre}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Button variant="outline" size="sm">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setEditingBook(book)}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant= "outline" size= "sm">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setDeletingBook(book)}
+                          >
                             <Trash2 className="h-4 w-4 text-destructive" />
                           </Button>
                         </div>
@@ -137,7 +173,30 @@ const ManageBooks = () => {
         </CardContent>
       </Card>
 
-      <BookFrom open = {isAddDialogueOpen} onOpenChange = {setIsAddDialogueOpen} categories = {categories} status = {status}/>
+      <BookFrom
+        open={isAddDialogueOpen}
+        onOpenChange={setIsAddDialogueOpen}
+        categories={categories}
+        status={status}
+        mode="add"
+      />
+
+      <BookFrom
+        open={!!editingBook}
+        onOpenChange={(open) => !open && setEditingBook(null)}
+        categories={categories}
+        status={status}
+        book={editingBook}
+        mode="edit"
+      />
+
+      <DeleteBookDialog
+        open={!!deletingBook}
+        onOpenChange={(open) => !open && setDeletingBook(null)}
+        book = {deletingBook}
+        title = "Delete Book"
+        description = {`Are you sure you want to delete "${deletingBook?.title}"? This action cannot be undone.`}
+      />
     </div>
   );
 };

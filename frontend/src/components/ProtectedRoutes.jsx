@@ -6,8 +6,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user)
   const isLoading = useAuthStore((state) => state.isLoading)
-  console.log(isLoading)
-  console.log(isAuthenticated)  
+  
 
   if (isLoading) {
     return <div>Loading...</div>; 
