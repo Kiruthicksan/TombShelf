@@ -9,7 +9,7 @@ const router = express.Router()
 router.post('/books', protect ,authorize('admin', 'publisher'), upload.single("image") , CreateNovel)
 router.get('/books' , GetBooks)
 router.get('/books/:id', GetBookById)
-router.put('/books/:id', protect , authorize ('admin', 'publisher'), UpdateBooks)
+router.put('/books/:id', protect , authorize ('admin', 'publisher'), upload.single("image") , UpdateBooks)
 router.delete('/books/:id', protect , authorize('admin'), DeleteBook)
 
 export default router
