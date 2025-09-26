@@ -1,7 +1,9 @@
-import BookComponent from "../../components/BookComponent";
 
 
-import HeroSection from "../../components/HeroSection";
+
+import BookComponent from "@/components/BookComponent";
+import HeroSection from "@/components/HeroSection";
+
 
 const Home = () => {
   
