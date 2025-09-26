@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/table";
 import BookFrom from "@/components/BookForm";
 import DeleteBookDialog from "@/components/DeleteBookDialog";
+import { Badge } from "@/components/ui/badge";
 
 const ManageBooks = () => {
   // bookstore
@@ -57,7 +58,7 @@ const ManageBooks = () => {
   });
 
   return (
-    <div className="space-y-10 px-10 py-5">
+    <div className="space-y-10 px-10 py-5 bg-gray-200">
       {/* Header */}
 
       <div className="flex justify-between  items-center ">
@@ -137,7 +138,10 @@ const ManageBooks = () => {
                   </TableRow>
                 ) : (
                   filteredBooks.map((book) => (
-                    <TableRow key={book._id}>
+                    <TableRow
+                      key={book._id}
+                      className="hover:bg-gray-200 transition duration-300"
+                    >
                       <TableCell>{book.title}</TableCell>
                       <TableCell>{book.author}</TableCell>
                       <TableCell>₹ {book.price}</TableCell>
@@ -145,7 +149,20 @@ const ManageBooks = () => {
                         {book.category.charAt(0).toUpperCase() +
                           book.category.slice(1)}
                       </TableCell>
-                      <TableCell>{book.genre}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {(Array.isArray(book.genre)
+                            ? book.genre[0]?.includes(",")
+                              ? book.genre[0].split(",").map((g) => g.trim())
+                              : book.genre
+                            : []
+                          ).map((g) => (
+                            <Badge variant="secondary" key={g}>
+                              {g}
+                            </Badge>
+                          ))}
+                        </div>
+                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           <Button
@@ -193,9 +210,9 @@ const ManageBooks = () => {
       <DeleteBookDialog
         open={!!deletingBook}
         onOpenChange={(open) => !open && setDeletingBook(null)}
-        book = {deletingBook}
-        title = "Delete Book"
-        description = {`Are you sure you want to delete "${deletingBook?.title}"? This action cannot be undone.`}
+        book={deletingBook}
+        title="Delete Book"
+        description={`Are you sure you want to delete "${deletingBook?.title}"? This action cannot be undone.`}
       />
     </div>
   );

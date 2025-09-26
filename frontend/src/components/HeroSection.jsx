@@ -4,16 +4,14 @@ import { useBookStore } from "../store/useBookStore";
 import { getImageUrl } from "../utils/image";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "./ui/button";
-
+import { Badge } from "./ui/badge";
 
 const HeroSection = () => {
-  
   const fetchBooks = useBookStore((state) => state.fetchBooks);
-  
 
   const [recentBooks, setRecentBooks] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRecent = async () => {
@@ -71,14 +69,16 @@ const HeroSection = () => {
             </p>
 
             {/* Genre tags */}
-            <div className="flex flex-wrap gap-2 mb-4">
-              {currentBook.genre?.map((g, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 text-xs rounded-full bg-[#FFB84D]/30 border border-[#FFB84D] text-[#FF6F00] font-semibold"
-                >
+            <div className="flex flex-wrap gap-2 mb-3">
+              {(Array.isArray(currentBook.genre)
+                ? currentBook.genre[0]?.includes(",")
+                  ? currentBook.genre[0].split(",").map((g) => g.trim())
+                  : currentBook.genre
+                : []
+              ).map((g) => (
+                <Badge variant="secondary" key={g} className= "bg-amber-300">
                   {g}
-                </span>
+                </Badge>
               ))}
             </div>
 
@@ -96,9 +96,14 @@ const HeroSection = () => {
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <Button variant="destructive" size="lg">
-                 Add to Cart
+                Add to Cart
               </Button>
-              <Button size= 'lg' variant = "ghost" className= "border border-amber-600 hover:border-amber-700 hover:bg-amber-500" onClick={() => navigate(`/books/${currentBook._id}`)}>
+              <Button
+                size="lg"
+                variant="ghost"
+                className="border border-amber-600 hover:border-amber-700 hover:bg-amber-500"
+                onClick={() => navigate(`/books/${currentBook._id}`)}
+              >
                 View Details
               </Button>
             </div>

@@ -1,14 +1,23 @@
 import { Separator } from "@radix-ui/react-select";
 import { Card, CardContent } from "./ui/card";
 
+
 const BookCard = ({ title, books, navigate, getImageUrl }) => {
+  
+  
+
+  
   return (
     <div className="mb-10">
       <h1 className="text-2xl font-bold text-gray-800 mb-3 font-[Inter] tracking-wide">
         {title}
       </h1>
 
-      <div className="flex gap-6 overflow-x-auto py-3 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-300">
+      <div
+        className="flex gap-6  py-3 cursor-grab active:cursor-grabbing  overflow-x-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-300"
+       
+       
+      >
         {books.map((book) => (
           <Card
             key={book._id}
@@ -37,4 +46,4 @@ const BookCard = ({ title, books, navigate, getImageUrl }) => {
   );
 };
 
-export default BookCard
+export default BookCard;

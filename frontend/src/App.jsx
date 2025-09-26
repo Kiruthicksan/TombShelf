@@ -12,12 +12,17 @@ import Unauthorized from "./pages/Unauthorized";
 import ManageBooks from "./pages/ManageBooks";
 import { useBookStore } from "./store/useBookStore";
 import BookDetailsPage from "./pages/BookDetailsPage";
+import { useCartStore } from "./store/useCartStore";
+import { Footer } from "./components/Footer";
+import { OrderPage } from "./pages/OrderPage";
 
 const MainLayout = ({ children }) => {
   return (
     <>
       <Navbar />
       {children}
+      <Footer />
+     
     </>
   );
 };
@@ -25,6 +30,7 @@ const MainLayout = ({ children }) => {
 const App = () => {
   const fetchUser = useAuthStore((state) => state.fetchUser);
   const fetchBooks = useBookStore((state) => state.fetchBooks);
+  const fetchCart = useCartStore((state) => state.fetchCart)
 
   const{isLoading : userLoading} = useAuthStore((state) => state.isLoading);
   const {isLoading : booksLoading} = useBookStore(state => state.isLoading)
@@ -34,6 +40,7 @@ const App = () => {
       try {
         const user = await fetchUser();
         const books = await fetchBooks();
+        const cart = await fetchCart()
       } catch (error) {
         console.error(error);
       }
@@ -88,11 +95,23 @@ const App = () => {
           }
         />
 
+         <Route
+          path="/order-page"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <OrderPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
         {/* Pages without navbar */}
         <Route path="/register" element={<Register />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>
+     
     </BrowserRouter>
   );
 };
