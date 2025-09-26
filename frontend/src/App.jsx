@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 import LoginPage from "./pages/LoginPage";
 import { useAuthStore } from "./store/store";
 import { useEffect } from "react";
-import Navbar from "./components/Navbar/Navbar";
+import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import Unauthorized from "./pages/Unauthorized";

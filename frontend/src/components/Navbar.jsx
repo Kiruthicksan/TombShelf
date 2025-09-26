@@ -1,18 +1,15 @@
 import { NavLink } from "react-router-dom";
-import TomeshelfLogo from "../../assets/TomeshelfLogo 1.png";
+import TomeshelfLogo from "../assets/TomeshelfLogo 1.png";
 import { CgProfile } from "react-icons/cg";
 import { HiMenu, HiOutlineSearch } from "react-icons/hi";
 import { useRef, useState } from "react";
-import useOutsideClick from "../hooks/useOutsideClick";
-import { useAuthStore } from "../../store/store";
+import useOutsideClick from "./hooks/useOutsideClick";
+import { useAuthStore } from "../store/store";
 import { ShoppingCart } from "lucide-react";
-import ProfileMenuOpen from "../ProfileMenuOpen";
+import ProfileMenuOpen from "./ProfileMenuOpen";
+import MobileMenuOpen from "./MobileMenuOpen";
 
 const Navbar = () => {
-  
-
- 
-
   //--------------------- auth store (global)-----------------------------------
 
   const user = useAuthStore((state) => state.user);
@@ -53,10 +50,8 @@ const Navbar = () => {
   const handleCloseProfile = () => setIsProfileOpen(false);
 
   return (
-
     <header className="sticky top-0 z-50 w-full border-b shadow-md bg-background/95 backdrop-blur  supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto flex h-[60px] items-center justify-between px-4 sm:px-6 lg:px-8">
-        
         {/* ----------------------Left: Logo ------------------------------------------------------*/}
         <div className="flex items-center gap-10">
           <NavLink to="/">
@@ -67,7 +62,7 @@ const Navbar = () => {
             />
           </NavLink>
 
-         {/* ------------------------------- Desktop search -------------------------------------------------- */}
+          {/* ------------------------------- Desktop search -------------------------------------------------- */}
           <div className="relative hidden md:flex">
             <input
               type="search"
@@ -102,7 +97,6 @@ const Navbar = () => {
 
         {/* ---------------------------Right-Section: Cart +  Profile + Mobile menu ---------------------------*/}
         <div className="flex items-center gap-4" ref={dropDownRef}>
-          
           {/* -------------------Mobile Hamburger------------------------------------- */}
           <button
             className="md:hidden flex items-center justify-center p-2 rounded-lg bg-[#BDC3C7]/50 hover:bg-[#BDC3C7]"
@@ -111,7 +105,7 @@ const Navbar = () => {
             <HiMenu className="h-6 w-6 text-[#2C3E50]" />
           </button>
 
-         {/* ------------ Cart Icon -----------------------------*/}
+          {/* ------------ Cart Icon -----------------------------*/}
 
           <div className="relative  gap-5 flex items-center" ref={profileRef}>
             {isAuthenticated && (
@@ -120,8 +114,7 @@ const Navbar = () => {
               </div>
             )}
 
-
-          {/* ---------------Profile icon ------------------------------ */}
+            {/* ---------------Profile icon ------------------------------ */}
             <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-[#BDC3C7]/50 text-[#2C3E50] transition-colors duration-200 hover:bg-[#BDC3C7]"
@@ -132,34 +125,24 @@ const Navbar = () => {
                 <CgProfile className="h-6 w-6" />
               )}
             </button>
-            
-            <ProfileMenuOpen isAuthenticated = {isAuthenticated} navLinkClasses = {navLinkClasses} handleCloseProfile = {handleCloseProfile} handleLogout = {handleLogout} isProfileOpen = {isProfileOpen} />
-          
+
+            {/* ---------------------------Profile DropDown ------------ */}
+            <ProfileMenuOpen
+              isAuthenticated={isAuthenticated}
+              navLinkClasses={navLinkClasses}
+              handleCloseProfile={handleCloseProfile}
+              handleLogout={handleLogout}
+              isProfileOpen={isProfileOpen}
+            />
           </div>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden w-full bg-white shadow-lg border-t border-gray-200 flex flex-col animate-slide-down">
-          <div className="p-4">
-            <input
-              type="search"
-              placeholder="Search for books..."
-              className="w-full h-10 rounded-lg border border-[#BDC3C7] px-4 text-sm outline-none placeholder:text-[#BDC3C7] focus:border-[#3498DB]"
-            />
-          </div>
-          <NavLink to="/" className={navLinkClasses}>
-            Home
-          </NavLink>
-          <NavLink to="/genres" className={navLinkClasses}>
-            Genres
-          </NavLink>
-          <NavLink to="/category" className={navLinkClasses}>
-            Category
-          </NavLink>
-        </div>
-      )}
+      {/* ---------------------Mobile Menu -------------------*/}
+      <MobileMenuOpen
+        isMobileMenuOpen={isMobileMenuOpen}
+        navLinkClasses={navLinkClasses}
+      />
     </header>
   );
 };
