@@ -16,7 +16,7 @@ export const CreateNovel = async (req, res) => {
       seriesTitle,
     } = req.body;
 
-    if (!title || !author || !description || !price ||  !orginalPrice || !category || !genre || !status) {
+    if (!title || !author || !description || !price ||  !category || !genre || !status) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -161,7 +161,7 @@ export const UpdateBooks = async (req, res) => {
     if (author !== undefined) updateData.author = author;
     if (description !== undefined) updateData.description = description;
     if (price !== undefined) updateData.price = price;
-    if ( orginalPrice == undefined) updateData.orginalPrice = orginalPrice
+  
     if (category !== undefined) updateData.category = category;
     if (genre !== undefined) updateData.genre = genre;
     if (image !== undefined) updateData.image = image;
