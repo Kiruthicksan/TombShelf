@@ -21,13 +21,17 @@ const bookSchema = new mongoose.Schema({
         required : true,
         min : 0
     },
+    orginalPrice :{
+        type : Number,
+        min: 0
+    },
     category: {
         type : String,
         required : true,
         enum : ['manga', 'comics']
     },
     genre: {
-        type : String,
+        type : [String],
         required : true
     },
     status: {
