@@ -1,55 +1,56 @@
-
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useBookStore } from "../store/useBookStore";
 import { getImageUrl } from "../utils/image";
 import { useNavigate } from "react-router-dom";
-
+import BookCard from "./BookCard";
 
 const BookComponent = () => {
   // book store
   const books = useBookStore((state) => state.books);
-  const fetchBooks = useBookStore((state) => state.fetchBooks)
+  const fetchBooks = useBookStore((state) => state.fetchBooks);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
+  const recentBooks = books
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 10);
+
+  const comics = useMemo(
+    () =>  books.filter((comicBook) => comicBook.category === "comics"), [books]
+  )
+  const mangas = useMemo(
+    () => books.filter((mangasBook) => mangasBook.category === "manga"), [books]
+  
+  )
   useEffect(() => {
-    fetchBooks()
-  }, [])
+    fetchBooks();
+  }, []);
 
   // create a array for storing categories
 
-  const categories = [...new Set(books.map((book) => book.category))];
-
-  const categoriesHeadings = {manga : "Manga World", comics : "Comics Universe"}
   return (
-    <section className="px-6 py-5  md:px-16">
-      {categories.map((category) => (
-        <div key={category} className="mb-2">
-          <h1 className="text-2xl font-extrabold text-gray-800 mb-2 font-[Oswald] tracking-wider text-shadow-lg text-shadow-gray-400">
-            {categoriesHeadings[category]}
-          </h1>
+    <section className="px-6 py-10  md:px-16">
+      <BookCard
+        title="New This Week"
+        books={recentBooks}
+        navigate={navigate}
+        getImageUrl={getImageUrl}
+      />
+      <BookCard
+        title="Comic Universe"
+        books={comics}
+        navigate={navigate}
+        getImageUrl={getImageUrl}
+      />
 
-          <div className="flex gap-6 overflow-x-auto py-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-300">
-            {books
-              .filter((book) => book.category === category)
-              .map((book) => (
-                <div
-                  key={book._id}
-                  className="relative w-[200px] h-[280px] rounded-lg overflow-hidden shadow-lg group transition-opacity duration-300 hover:opacity-90"
-                 onClick={() => navigate((`/books/${book._id}`))}
-                >
-                  <img src= {getImageUrl(book.image)} alt= {book.title} loading="lazy" />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 to-black/40 px-3 py-3">
-                    <div className="transition-transform duration-300 group-hover:-translate-y-2">
-                      <p className="text-white font-extrabold text-sm tracking-wide">{book.title}</p>
-                      <p className="text-gray-200 font-semibold text-xs">{book.author}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </div>
-      ))}
+       <BookCard
+        title="Comic Universe"
+        books={mangas}
+        navigate={navigate}
+        getImageUrl={getImageUrl}
+      />
+
+     
     </section>
   );
 };

@@ -40,6 +40,7 @@ const BookFrom = ({
     category: "",
     genre: "",
     price: "",
+    orginalPrice: "",
     status: "",
     image: "",
   });
@@ -56,6 +57,7 @@ const BookFrom = ({
         category: book.category,
         genre: book.genre,
         price: book.price,
+        orginalPrice: book.orginalPrice,
         status: book.status,
         image: book.image,
       });
@@ -67,6 +69,7 @@ const BookFrom = ({
         category: "",
         genre: "",
         price: "",
+        orginalPrice: "",
         status: "",
         image: "",
       });
@@ -182,6 +185,21 @@ const BookFrom = ({
               />
               {errors.price && (
                 <p className="text-red-500 text-sm">{errors.price}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label>OrginalPrice (₹) *</Label>
+              <Input
+                id="orginalPrice"
+                type="number"
+                min="0"
+                value={formData.orginalPrice}
+                onChange={(e) => handleChange("orginalPrice", e.target.value)}
+                placeholder="₹ 1"
+              />
+              {errors.orginalPrice && (
+                <p className="text-red-500 text-sm">{errors.orginalPrice}</p>
               )}
             </div>
 

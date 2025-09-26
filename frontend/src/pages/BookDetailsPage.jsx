@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { useBookStore } from "@/store/useBookStore";
 import { getImageUrl } from "@/utils/image";
 
-import { ShoppingCart } from "lucide-react";
+import { ShoppingBasket, ShoppingCart } from "lucide-react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -35,7 +35,7 @@ const BookDetailsPage = () => {
           {/* Left Column - Book image */}
           <div className="lg:col-span-1">
             <div className="sticky top-8">
-              <Card className="overflow-hidden">
+              <Card className="overflow-hidden p-0 ">
                 <CardContent className="p-0">
                   <img
                     src={getImageUrl(book.image)}
@@ -45,12 +45,7 @@ const BookDetailsPage = () => {
                 </CardContent>
               </Card>
 
-              <div className="mt-8 space-y-3">
-                <Button size="lg" className="w-full">
-                  <ShoppingCart className="w-5 h-5 mr-2" />
-                  Add to Cart
-                </Button>
-              </div>
+            
             </div>
           </div>
 
@@ -68,16 +63,34 @@ const BookDetailsPage = () => {
 
               <div className="flex items-center gap-3 mb-6">
                 <span className="text-2xl font-semibold">₹ {book.price}</span>
+                {book.orginalPrice && (
+                  <span className="text-lg text-muted-foreground line-through">₹ {book.orginalPrice}</span>
+                )}
+                {book.orginalPrice && (
+                  <Badge variant= "destructive">Save ₹{(book.orginalPrice - book.price).toFixed(2)}</Badge>
+                )}
               </div>
             </div>
             <Separator />
 
             <div>
-              <h3 className="mb-3">About this Book</h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <h3 className="mb-3 text-xl font-semibold">About this Book</h3>
+              <p className="text-muted-foreground leading-relaxed text-justify">
                 {book.description}
               </p>
             </div>
+            <Separator />
+             <div className="mt-8 space-x-3 flex">
+                <Button size="lg" className="w-1/2">
+                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  Add to Cart
+                </Button>
+                
+                  <Button size="lg" className="w-1/2 border border-gray-700 hover:bg-gray-300" variant = "outline">
+                  <ShoppingBasket className="w-5 h-5 mr-2" />
+                  Buy Now
+                </Button>
+              </div>
           </div>
         </div>
       </div>
