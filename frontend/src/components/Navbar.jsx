@@ -1,13 +1,14 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import TomeshelfLogo from "../assets/TomeshelfLogo 1.png";
-import { CgProfile } from "react-icons/cg";
 import { HiMenu, HiOutlineSearch } from "react-icons/hi";
 import { useRef, useState } from "react";
 import useOutsideClick from "./hooks/useOutsideClick";
 import { useAuthStore } from "../store/store";
-import { ShoppingCart } from "lucide-react";
-import ProfileMenuOpen from "./ProfileMenuOpen";
+import { Heart, ShoppingCart } from "lucide-react";
+
 import MobileMenuOpen from "./MobileMenuOpen";
+import { Button } from "./ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const Navbar = () => {
   //--------------------- auth store (global)-----------------------------------
@@ -22,6 +23,10 @@ const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // ------------ navigate ----------------------------------------
+
+  const navigate = useNavigate();
+
   // ---------------------- Refs for outside link-------------------------------
 
   const profileRef = useRef(null);
@@ -32,19 +37,11 @@ const Navbar = () => {
 
   //  ------------------ globalized main navlink for styling ----------------------------------
   const navLinkClasses = ({ isActive }) =>
-    `block px-4 py-2 rounded-lg transition-colors duration-200 ${
-      isActive ? "text-[#3498DB] font-medium" : "text-[#2C3E50]"
-    } hover:text-[#3498DB] hover:bg-[#ECF0F1]`;
+    `block px-2 py-2 rounded-lg transition-colors duration-200 ${
+      isActive ? "text-red-500 font-medium" : "text-[#2C3E50]"
+    } hover:text-red-500`;
 
   //------------------- logic for handling logout ---------------------------------------------------
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
 
   // ----------helper function to close profile menu automatically-------------------------------------
   const handleCloseProfile = () => setIsProfileOpen(false);
@@ -53,7 +50,7 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 w-full border-b shadow-md bg-background/95 backdrop-blur  supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto flex h-[60px] items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* ----------------------Left: Logo ------------------------------------------------------*/}
-        <div className="flex items-center gap-10">
+        <div className="flex items-center gap-10 flex-shrink-0">
           <NavLink to="/">
             <img
               src={TomeshelfLogo}
@@ -74,14 +71,25 @@ const Navbar = () => {
         </div>
 
         {/* --------------------------Center: Nav links + Search (desktop only) -------------------*/}
-        <div className="hidden md:flex flex-1 items-center justify-center">
-          <div className="flex">
+        <div className="hidden md:flex  items-center ">
+          <div className="flex gap-2">
             <NavLink to="/" className={navLinkClasses}>
               Home
             </NavLink>
             <NavLink to="/genres" className={navLinkClasses}>
               Genres
             </NavLink>
+
+            {isAuthenticated && (
+              <>
+                <NavLink to="/news" className={navLinkClasses}>
+                  News
+                </NavLink>
+                <NavLink to="/library" className={navLinkClasses}>
+                  Library
+                </NavLink>
+              </>
+            )}
 
             {/* ................ Manage Books page for admin  ----------------------------- */}
 
@@ -105,35 +113,51 @@ const Navbar = () => {
             <HiMenu className="h-6 w-6 text-[#2C3E50]" />
           </button>
 
-          {/* ------------ Cart Icon -----------------------------*/}
+          {/* ------------  Icons -----------------------------*/}
 
           <div className="relative  gap-5 flex items-center" ref={profileRef}>
             {isAuthenticated && (
-              <div className="relative">
-                <ShoppingCart />
+              <div className="hidden md:flex gap-4">
+                <div>
+                  <Heart className="hover:text-red-400" />
+                </div>
+                <div className="relative">
+                  <ShoppingCart className="hover:text-yellow-600" />
+                </div>{" "}
               </div>
             )}
 
             {/* ---------------Profile icon ------------------------------ */}
-            <button
-              onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#BDC3C7]/50 text-[#2C3E50] transition-colors duration-200 hover:bg-[#BDC3C7]"
-            >
-              {isAuthenticated ? (
-                user.userName.charAt(0).toUpperCase()
-              ) : (
-                <CgProfile className="h-6 w-6" />
-              )}
-            </button>
+
+            {isAuthenticated ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => navigate("/profile")}
+                    variant="destructive"
+                  >
+                    Welcome{" "}
+                    {user.userName.charAt(0).toUpperCase() +
+                      user?.userName.slice(1).toLowerCase()}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Click to access your profile</TooltipContent>
+              </Tooltip>
+            ) : (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => navigate("/register")}
+                    variant="destructive"
+                  >
+                    Start Reading
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Create Your Account</TooltipContent>
+              </Tooltip>
+            )}
 
             {/* ---------------------------Profile DropDown ------------ */}
-            <ProfileMenuOpen
-              isAuthenticated={isAuthenticated}
-              navLinkClasses={navLinkClasses}
-              handleCloseProfile={handleCloseProfile}
-              handleLogout={handleLogout}
-              isProfileOpen={isProfileOpen}
-            />
           </div>
         </div>
       </nav>

@@ -3,16 +3,30 @@ import { useAuthStore } from "../store/store";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const Profile = () => {
+
+  // -------------------- Auth Store (global) --------------------------------------
   const user = useAuthStore((state) => state.user);
   const updateUser = useAuthStore((state) => state.updateUser);
+   const logout = useAuthStore((state) => state.logout);
 
+  // ------------------------------- Local states ------------------------------------
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({ userName: "", email: "" });
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/')
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   // Sync formData with user
   useEffect(() => {
@@ -100,14 +114,14 @@ const Profile = () => {
           <div className="flex justify-end gap-3">
             {isEditing ? (
               <>
-                <button
+                <Button
                   type="button"
                   onClick={handleCancel}
                   disabled={isLoading}
-                  className="py-2 px-4 rounded-lg text-gray-700 border border-gray-400 hover:bg-gray-200 transition"
+                
                 >
                   Cancel
-                </button>
+                </Button>
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -121,13 +135,23 @@ const Profile = () => {
                 </button>
               </>
             ) : (
-              <button
+              <>
+              <Button
                 type="button"
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg py-2 transition-colors"
+                className= "w-1/2"
                 onClick={() => setIsEditing(true)}
               >
                 Edit
-              </button>
+              </Button>
+               <Button
+                type="button"
+                className= "w-1/2"
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+              </>
+              
             )}
           </div>
         </form>
