@@ -7,30 +7,66 @@ import { useCartStore } from "@/store/useCartStore";
 import { getImageUrl } from "@/utils/image";
 
 import { ShoppingBasket, ShoppingCart } from "lucide-react";
-import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useMemo } from "react";
+import { useMatch, useNavigate, useParams } from "react-router-dom";
 
 const BookDetailsPage = () => {
   const { id } = useParams();
   const book = useBookStore((state) => state.book);
+  const books = useBookStore((state) => state.books);
   const fetchBook = useBookStore((state) => state.fetchBook);
   const isLoading = useBookStore((state) => state.isLoading);
   const error = useBookStore((state) => state.error);
- const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     if (id) {
       fetchBook(id);
     }
   }, [id, fetchBook]);
 
- 
+  const relatedBooks = useMemo(() => {
+    if (!book || books.length === 0) return [];
+
+    return books
+      .filter((b) => b._id !== book._id)
+      .filter((b) => {
+        if (book.genre && b.genre) {
+          const bookGenres = Array.isArray(book.genre)
+            ? book.genre
+            : typeof book.genre === "string"
+            ? book.genre.split(",").map((g) => g.trim())
+            : [];
+          const otherBookGenres = Array.isArray(b.genre)
+            ? b.genre
+            : typeof b.genre === "string"
+            ? b.genre.split(",").map((g) => g.trim())
+            : [];
+
+          const hasMatchingGenre = bookGenres.some((genre) =>
+            otherBookGenres.includes(genre)
+          );
+
+          if (hasMatchingGenre) return true;
+        }
+
+        if (book.author && b.author && book.author === b.author) {
+          return true;
+        }
+
+        if (book.category && b.category && book.category === b.category) {
+          return true;
+        }
+        return false;
+      })
+      .slice(0, 5);
+  }, [book, books]);
 
   if (isLoading) return <p className="text-center">Loading book...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
   if (!book && !isLoading && !error) {
     return <p className="text-center text-gray-500">Book not found.</p>;
   }
-  console.log(book.genre);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -96,6 +132,7 @@ const BookDetailsPage = () => {
               </p>
             </div>
             <Separator />
+
             <div className="mt-8 space-x-3 flex">
               <Button size="lg" className="w-1/2">
                 <ShoppingCart className="w-5 h-5 mr-2" />
@@ -106,7 +143,7 @@ const BookDetailsPage = () => {
                 size="lg"
                 className="w-1/2 border border-gray-700 hover:bg-gray-300"
                 variant="outline"
-                onClick = {() => navigate('/order-page')}
+                onClick={() => navigate("/order-page")}
               >
                 <ShoppingBasket className="w-5 h-5 mr-2" />
                 Buy Now
@@ -114,6 +151,40 @@ const BookDetailsPage = () => {
             </div>
           </div>
         </div>
+
+        {relatedBooks.length > 0 && (
+          <div className="mt-16">
+            <Separator />
+            <h2 className="text-2xl font-bold my-6 ">You May Also Like</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {relatedBooks.map((relatedBook) => (
+                <Card
+                  key={relatedBook._id}
+                  className="w-[200px] h-[400px] flex-shrink-0 overflow-hidden shadow-lg p-0 group hover:opacity-90 transition duration-300 cursor-pointer"
+                  onClick={() => navigate(`/books/${relatedBook._id}`)}
+                >
+                  <CardContent className="p-0">
+                    <img
+                      src={getImageUrl(relatedBook.image)}
+                      alt={relatedBook.title}
+                      loading="lazy"
+                      className="w-full"
+                    />
+                    <Separator className="border border-black" />
+                    <div className="px-2 py-2">
+                      <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors">
+                        {relatedBook.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {relatedBook.author}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
