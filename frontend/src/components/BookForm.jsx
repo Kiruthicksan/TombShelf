@@ -20,11 +20,10 @@ import {
 } from "./ui/select";
 import { Button } from "./ui/button";
 import { useBookStore } from "@/store/useBookStore";
-import {  X } from "lucide-react"; 
+import { X } from "lucide-react";
 
 // Helper component for the pastel badge
 const PastelBadge = ({ genre, onRemove }) => {
-  
   const colors = [
     "bg-red-200 text-red-800",
     "bg-blue-200 text-blue-800",
@@ -34,7 +33,9 @@ const PastelBadge = ({ genre, onRemove }) => {
     "bg-pink-200 text-pink-800",
   ];
   // Simple hash function to get a consistent color for a genre
-  const colorIndex = genre.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
+  const colorIndex =
+    genre.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
+    colors.length;
   const colorClass = colors[colorIndex];
 
   return (
@@ -53,13 +54,12 @@ const PastelBadge = ({ genre, onRemove }) => {
   );
 };
 
-
-const BookFrom = ({
+const BookForm = ({
   open,
   onOpenChange,
   onSubmit,
   book,
- 
+
   mode,
 }) => {
   const genres = [
@@ -79,7 +79,7 @@ const BookFrom = ({
     "Seinen",
     "Slice of Life",
     "Dark Fantasy",
-    "SuperHero"
+    "SuperHero",
   ];
   const createBook = useBookStore((state) => state.createBook);
   const updateBook = useBookStore((state) => state.updateBook);
@@ -89,11 +89,15 @@ const BookFrom = ({
     author: "",
     description: "",
     category: "",
-    genre: [], 
+    genre: [],
     price: "",
     orginalPrice: "",
     status: "",
     image: "",
+   
+    totalVolumes: "",
+    language: "",
+    ageRating: "",
   });
   const [errors, setErrors] = useState({});
   const [genreSuggestion, setGenreSuggestion] = useState([]);
@@ -113,6 +117,10 @@ const BookFrom = ({
         orginalPrice: book.orginalPrice,
         status: book.status,
         image: book.image,
+       
+        totalVolumes: book.totalVolumes,
+        language: book.language,
+        ageRating: book.ageRating,
       });
     } else {
       setFormData({
@@ -125,27 +133,32 @@ const BookFrom = ({
         orginalPrice: "",
         status: "",
         image: "",
+        
+        totalVolumes: "",
+        language: "",
+        ageRating: "",
       });
     }
   }, [book, mode, open]);
 
   const validateForm = () => {
     const errors = {};
-    if (!formData.title.trim()) errors.title = "Title is required";
-    if (!formData.author.trim()) errors.author = "Author is required";
-    if (
-      !formData.price ||
-      isNaN(formData.price) ||
-      parseFloat(formData.price) <= 0
-    )
-      errors.price = "Price must be a positive number";
-    if (!formData.category) errors.category = "Category is required";
-  
-    if (!formData.genre || formData.genre.length === 0) errors.genre = "At least one Genre is required";
-    if (!formData.status) errors.status = "Status is required";
-    if (!formData.image) errors.image = "Image is required";
-    if (!formData.description.trim())
-      errors.description = "Description is required";
+    // if (!formData.title.trim()) errors.title = "Title is required";
+    // if (!formData.author.trim()) errors.author = "Author is required";
+    // if (
+    //   !formData.price ||
+    //   isNaN(formData.price) ||
+    //   parseFloat(formData.price) <= 0
+    // )
+    //   errors.price = "Price must be a positive number";
+    // if (!formData.category) errors.category = "Category is required";
+
+    // if (!formData.genre || formData.genre.length === 0)
+    //   errors.genre = "At least one Genre is required";
+    // if (!formData.status) errors.status = "Status is required";
+    // if (!formData.image) errors.image = "Image is required";
+    // if (!formData.description.trim())
+    //   errors.description = "Description is required";
     return errors;
   };
 
@@ -176,7 +189,7 @@ const BookFrom = ({
         author: "",
         description: "",
         category: "",
-        genre: [], 
+        genre: [],
         price: "",
         status: "",
         image: "",
@@ -188,16 +201,15 @@ const BookFrom = ({
   };
 
   // --- Genre Tag Input Handlers ---
-  
+
   const handleGenreInputChange = (value) => {
     setGenreInput(value);
-    
+
     if (!value) {
       setGenreSuggestion([]);
       return;
     }
 
-   
     const filtered = genres.filter(
       (g) =>
         g.toLowerCase().includes(value.toLowerCase()) &&
@@ -209,12 +221,12 @@ const BookFrom = ({
   const addGenre = (genre) => {
     // Only add if the genre is not already in the array
     if (!formData.genre.includes(genre)) {
-        setFormData((prev) => ({ 
-            ...prev, 
-            genre: [...prev.genre, genre] 
-        }));
-        // Clear genre error if one exists after adding a tag
-        setErrors(prev => ({ ...prev, genre: undefined }));
+      setFormData((prev) => ({
+        ...prev,
+        genre: [...prev.genre, genre],
+      }));
+      // Clear genre error if one exists after adding a tag
+      setErrors((prev) => ({ ...prev, genre: undefined }));
     }
     setGenreInput("");
     setGenreSuggestion([]);
@@ -307,18 +319,12 @@ const BookFrom = ({
                 value={formData.category}
                 onValueChange={(value) => handleChange("category", value)}
               >
-                <SelectTrigger>
+                <SelectTrigger className= "w-full">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                 
-                    <SelectItem value ="manga" >
-                      Manga
-                    </SelectItem>
-                       <SelectItem value = "comics">
-                     Comics
-                    </SelectItem>
-                 
+                  <SelectItem value="manga">Manga</SelectItem>
+                  <SelectItem value="comics">Comics</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -326,14 +332,12 @@ const BookFrom = ({
                 <p className="text-red-500 text-sm">{errors.category}</p>
               )}
             </div>
-            
-           
+
             <div className="space-y-2 relative">
               <Label>Genre *</Label>
-              
+
               {/* Tag Display Area */}
               <div className="flex flex-wrap items-center min-h-[40px] border border-input rounded-md p-2 bg-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 transition-all">
-                
                 {/* Selected Tags */}
                 {formData.genre.map((g) => (
                   <PastelBadge key={g} genre={g} onRemove={removeGenre} />
@@ -342,13 +346,15 @@ const BookFrom = ({
                 {/* Input for typing/filtering */}
                 <Input
                   id="genre-input"
-                  placeholder={formData.genre.length === 0 ? "Type to filter genres" : ""}
+                  placeholder={
+                    formData.genre.length === 0 ? "Type to filter genres" : ""
+                  }
                   value={genreInput}
                   onChange={(e) => handleGenreInputChange(e.target.value)}
                   className="flex-1 min-w-[100px] border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-auto"
                 />
               </div>
-              
+
               {/* Autosuggestion List */}
               {genreSuggestion.length > 0 && (
                 <ul className="absolute z-50 bg-white border w-full max-h-40 overflow-auto mt-1 rounded shadow-lg">
@@ -363,30 +369,24 @@ const BookFrom = ({
                   ))}
                 </ul>
               )}
-              
+
               {errors.genre && (
                 <p className="text-red-500 text-sm">{errors.genre}</p>
               )}
             </div>
-          
+
             <div className="space-y-2">
               <Label>Status *</Label>
               <Select
                 value={formData.status}
                 onValueChange={(value) => handleChange("status", value)}
               >
-                <SelectTrigger>
+                <SelectTrigger className= "w-full">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  
-                    <SelectItem value = "upcoming" >
-                      Ongoing
-                    </SelectItem>
-                     <SelectItem value ="released" >
-                      Completed
-                    </SelectItem>
-                 
+                  <SelectItem value="ongoing">Ongoing</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
                 </SelectContent>
               </Select>
               {errors.status && (
@@ -403,6 +403,31 @@ const BookFrom = ({
               />
               {errors.image && (
                 <p className="text-red-500 text-sm">{errors.image}</p>
+              )}
+            </div>
+           
+            <div className="space-y-2">
+              <Label>TotalVolumes </Label>
+              <Input
+                type="number"
+                id="totalVolumes"
+                placeholder = "Total Volumes"
+                onChange={(e) => handleChange("totalVolumes", e.target.value)}
+              />
+              {errors.seriesTitle && (
+                <p className="text-red-500 text-sm">{errors.seriesTitle}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label>Language </Label>
+              <Input
+                type="text"
+                id="language"
+                placeholder = "Language"
+                onChange={(e) => handleChange("language", e.target.value)}
+              />
+              {errors.seriesTitle && (
+                <p className="text-red-500 text-sm">{errors.seriesTitle}</p>
               )}
             </div>
           </div>
@@ -437,4 +462,4 @@ const BookFrom = ({
     </Dialog>
   );
 };
-export default BookFrom;
+export default BookForm;

@@ -5,7 +5,6 @@ import { useRef, useState } from "react";
 import useOutsideClick from "./hooks/useOutsideClick";
 import { useAuthStore } from "../store/store";
 import { Heart, ShoppingCart } from "lucide-react";
-
 import MobileMenuOpen from "./MobileMenuOpen";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
@@ -16,24 +15,24 @@ const Navbar = () => {
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isAdmin = useAuthStore((state) => state.user?.role === "admin");
-  const logout = useAuthStore((state) => state.logout);
 
   // ---------------------  local states --------------------------
 
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isGenreOpen, setIsGenreOpen] = useState(false);
 
   // ------------ navigate ----------------------------------------
 
   const navigate = useNavigate();
 
-  // ---------------------- Refs for outside link-------------------------------
+  // ---------------------- Refs -------------------------------
 
-  const profileRef = useRef(null);
+  const genreRef = useRef(null);
   const dropDownRef = useRef(null);
+  const timeOutRef = useRef(null);
 
-  useOutsideClick(profileRef, () => setIsProfileOpen(false));
   useOutsideClick(dropDownRef, () => setIsMobileMenuOpen(false));
+  useOutsideClick(genreRef, () => setIsProfileOpen(false));
 
   //  ------------------ globalized main navlink for styling ----------------------------------
   const navLinkClasses = ({ isActive }) =>
@@ -76,8 +75,9 @@ const Navbar = () => {
             <NavLink to="/" className={navLinkClasses}>
               Home
             </NavLink>
-            <NavLink to="/genres" className={navLinkClasses}>
-              Genres
+
+            <NavLink to="/genre" className={navLinkClasses}>
+             Novels
             </NavLink>
 
             {isAuthenticated && (
@@ -95,9 +95,7 @@ const Navbar = () => {
 
             {isAuthenticated && isAdmin && (
               <>
-                <NavLink to="/manage-books" className={navLinkClasses}>
-                  Manage Books
-                </NavLink>
+                <NavLink className={navLinkClasses} to= "/manage-books">Manage Books</NavLink>
               </>
             )}
           </div>
@@ -115,7 +113,7 @@ const Navbar = () => {
 
           {/* ------------  Icons -----------------------------*/}
 
-          <div className="relative  gap-5 flex items-center" ref={profileRef}>
+          <div className="relative  gap-5 flex items-center">
             {isAuthenticated && (
               <div className="hidden md:flex gap-4">
                 <div>

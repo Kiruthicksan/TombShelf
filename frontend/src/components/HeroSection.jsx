@@ -2,29 +2,31 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBookStore } from "../store/useBookStore";
 import { getImageUrl } from "../utils/image";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 
 const HeroSection = () => {
-  const fetchBooks = useBookStore((state) => state.fetchBooks);
+  //  --------------------  book store (global state)-----------------------
 
+  const books = useBookStore((state) => state.books);
+
+  //  .....................local states.....................
   const [recentBooks, setRecentBooks] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchRecent = async () => {
-      await fetchBooks(); // fetch all books
-      const recent = [...useBookStore.getState().books]
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        .slice(0, 5);
-      setRecentBooks(recent);
-    };
-    fetchRecent();
-  }, []);
+  // ---------------------- get newly added books ----------------------------------
 
-  // Auto-slide
+  useEffect(() => {
+    const recent = [...books]
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 5);
+    setRecentBooks(recent);
+  }, [books]);
+
+  // -----------------------------------------------Auto-slide---------------------------------------
+
   useEffect(() => {
     if (recentBooks.length === 0) return;
     const interval = setInterval(() => {
@@ -76,7 +78,7 @@ const HeroSection = () => {
                   : currentBook.genre
                 : []
               ).map((g) => (
-                <Badge variant="secondary" key={g} className= "bg-amber-300">
+                <Badge variant="secondary" key={g} className="bg-amber-300">
                   {g}
                 </Badge>
               ))}

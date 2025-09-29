@@ -5,47 +5,46 @@ import { useNavigate } from "react-router-dom";
 import BookCard from "./BookCard";
 
 const BookComponent = () => {
-  // book store
+  // -----------------------------book store------------------------
   const books = useBookStore((state) => state.books);
-  const fetchBooks = useBookStore((state) => state.fetchBooks);
-
+ 
   const navigate = useNavigate();
 
-  const recentBooks = books
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 8);
+  //  ---------------------------- books fetching logics ----------------------
+
+  const recentBooks = useMemo(
+    () =>
+      [...books]
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 8),
+    [books]
+  );
 
   const comics = useMemo(
-    () =>  books.filter((comicBook) => comicBook.category === "comics"), [books]
-  )
+    () => books.filter((comicBook) => comicBook.category === "comics"),
+    [books]
+  );
+
   const mangas = useMemo(
-    () => books.filter((mangasBook) => mangasBook.category === "manga"), [books]
-  
-  )
+    () => books.filter((mangasBook) => mangasBook.category === "manga"),
+    [books]
+  );
 
   const action = useMemo(() => {
-  return books.filter((book) => {
-    if (Array.isArray(book.genre)) {
-     
-      const genres = book.genre.flatMap((g) =>
-        g.split(",").map((x) => x.trim().toLowerCase())
-      );
-      return genres.includes("action");
-    }
-    return false;
-  });
-}, [books]);
+    return books.filter((book) => {
+      if (Array.isArray(book.genre)) {
+        const genres = book.genre.flatMap((g) =>
+          g.split(",").map((x) => x.trim().toLowerCase())
+        );
+        return genres.includes("action");
+      }
+      return false;
+    });
+  }, [books]);
 
-
+  
 
  
- 
-
-  useEffect(() => {
-    fetchBooks();
-  }, []);
-
-  // create a array for storing categories
 
   return (
     <section className="px-6 py-10  md:px-16">
@@ -62,21 +61,19 @@ const BookComponent = () => {
         getImageUrl={getImageUrl}
       />
 
-       <BookCard
+      <BookCard
         title="Manga World"
         books={mangas}
         navigate={navigate}
         getImageUrl={getImageUrl}
       />
 
-        <BookCard
+      <BookCard
         title="Action Novels"
         books={action}
         navigate={navigate}
         getImageUrl={getImageUrl}
       />
-
-     
     </section>
   );
 };

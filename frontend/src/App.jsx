@@ -13,15 +13,15 @@ import ManageBooks from "./pages/ManageBooks";
 import { useBookStore } from "./store/useBookStore";
 import BookDetailsPage from "./pages/BookDetailsPage";
 import { useCartStore } from "./store/useCartStore";
-import { Footer } from "./components/Footer";
-import { OrderPage } from "./pages/OrderPage";
+import GenrePage from "./pages/GenrePage";
+
+
 
 const MainLayout = ({ children }) => {
   return (
     <>
       <Navbar />
       {children}
-      <Footer />
      
     </>
   );
@@ -63,6 +63,18 @@ const App = () => {
           }
         />
 
+          <Route
+          path="/genre"
+          element={
+            <MainLayout>
+              <GenrePage />
+            </MainLayout>
+          }
+        />
+
+      
+      
+
          <Route
           path="/books/:id"
           element={
@@ -71,6 +83,8 @@ const App = () => {
             </MainLayout>
           }
         />
+
+
 
         {/* Protected Routes || pages */}
         <Route
@@ -95,16 +109,7 @@ const App = () => {
           }
         />
 
-         <Route
-          path="/order-page"
-          element={
-            <ProtectedRoute>
-              <MainLayout>
-                <OrderPage />
-              </MainLayout>
-            </ProtectedRoute>
-          }
-        />
+        
 
         {/* Pages without navbar */}
         <Route path="/register" element={<Register />}></Route>

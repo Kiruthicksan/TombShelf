@@ -7,6 +7,9 @@ export const useBookStore = create((set, get) => ({
   isLoading: true,
   error: false,
 
+
+  
+
   fetchBooks: async (query = {}) => {
     set({ isLoading: true, error: null });
 
@@ -42,7 +45,15 @@ export const useBookStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const form = new FormData();
-      for (const key in data) form.append(key, data[key]);
+      for (const key in data){
+        if(Array.isArray(data[key])){
+          data[key].forEach(item => {
+            form.append(key, item);
+          })
+        }else{
+          form.append(key,data[key])
+        }
+      }
       const response = await api.post("/books", form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -67,7 +78,16 @@ export const useBookStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const form = new FormData();
-      for (const key in data) form.append(key, data[key]);
+      for (const key in data) {
+        if (Array.isArray(data[key])) {
+         
+          data[key].forEach(item => {
+            form.append(key, item); 
+          });
+        } else {
+          form.append(key, data[key]);
+        }
+      }
       const response = await api.put(`/books/${id}`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       });

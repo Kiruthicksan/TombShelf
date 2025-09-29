@@ -1,20 +1,10 @@
-
-
-
 import BookComponent from "@/components/BookComponent";
 import HeroSection from "@/components/HeroSection";
 
-
 const Home = () => {
-  
-
- 
-
-  
   return (
     <main>
-     <HeroSection />
-
+      <HeroSection />
       <section>
         <BookComponent />
       </section>

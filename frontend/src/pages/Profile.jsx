@@ -17,7 +17,12 @@ const Profile = () => {
   const [formData, setFormData] = useState({ userName: "", email: "" });
   const [isLoading, setIsLoading] = useState(false);
 
+
+  // ---------------------------------- navigate hook-------------------------------
+
   const navigate = useNavigate();
+
+  // ------------------------------- Logout Logic --------------------------------------
 
   const handleLogout = async () => {
     try {
@@ -28,31 +33,31 @@ const Profile = () => {
     }
   };
 
-  // Sync formData with user
+
+  // ----------------------------Sync formData with user---------------------------
   useEffect(() => {
     if (user) setFormData({ userName: user.userName, email: user.email });
   }, [user]);
 
-  // handle change of input feild
+  // ===========================handle change of input feild------------------------------
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // cancel button
+  // ------------------------------------cancel button---------------------------------------------
   const handleCancel = () => {
     setIsEditing(false);
     setFormData({ userName: user.userName, email: user.email });
   };
 
-  // actual update logic
+  // ---------------------------------actual update logic----------------------------------------
   const handleUpdate = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       await updateUser(formData);
       setIsEditing(false);
-      alert("Profile updated successfully!");
     } catch (error) {
       console.error(error.message);
       alert(error.message);
