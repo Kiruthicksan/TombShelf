@@ -12,8 +12,13 @@ export const CreateNovel = async (req, res) => {
       category,
       genre,
       status,
-    
       seriesTitle,
+      volumeNumber,
+      totalVolumes,
+      language,
+      ageRating
+    
+     
     } = req.body;
 
     if (!title || !author || !description || !price ||  !category || !genre || !status) {
@@ -21,7 +26,7 @@ export const CreateNovel = async (req, res) => {
     }
 
     const newBook = await Book.create({
-      title,
+      title,       
       author,
       description,
       price,
@@ -29,8 +34,13 @@ export const CreateNovel = async (req, res) => {
       category,
       genre,
       status,
+       seriesTitle,
+      volumeNumber,
+      totalVolumes,
+      language,
+      ageRating,
       image: req.file ? `/uploads/${req.file.filename}` : "/uploads/default-cover.jpg",
-      seriesTitle,
+      
       addedBy: req.user.id,
     });
 
@@ -144,12 +154,16 @@ export const UpdateBooks = async (req, res) => {
       author,
       description,
       price,
-       orginalPrice,
+      orginalPrice,
+       status,
       category,
       genre,
       image,
       volumeNumber,
       seriesTitle,
+      totalVolumes,
+      language,
+      ageRating,
     } = req.body;
 
     // build object with only provided feilds
@@ -161,12 +175,16 @@ export const UpdateBooks = async (req, res) => {
     if (author !== undefined) updateData.author = author;
     if (description !== undefined) updateData.description = description;
     if (price !== undefined) updateData.price = price;
-  
+    if (orginalPrice !== undefined) updateData.orginalPrice = orginalPrice
     if (category !== undefined) updateData.category = category;
     if (genre !== undefined) updateData.genre = genre;
     if (image !== undefined) updateData.image = image;
     if (volumeNumber !== undefined) updateData.volumeNumber = volumeNumber;
     if (seriesTitle !== undefined) updateData.seriesTitle = seriesTitle;
+    if(totalVolumes !== undefined) updateData.totalVolumes = totalVolumes
+    if (language !== undefined) updateData.language = language
+    if (ageRating !== undefined) updateData.ageRating = ageRating
+    if (status !== undefined) updateData.status = status
 
     const UpdateBook = await Book.findByIdAndUpdate(id, updateData, {
       new: true,
