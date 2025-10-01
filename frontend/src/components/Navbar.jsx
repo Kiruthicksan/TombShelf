@@ -8,6 +8,7 @@ import { Heart, ShoppingCart } from "lucide-react";
 import MobileMenuOpen from "./MobileMenuOpen";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import CartIcon from "./CartIcon";
 
 const Navbar = () => {
   //--------------------- auth store (global)-----------------------------------
@@ -119,9 +120,7 @@ const Navbar = () => {
                 <div>
                   <Heart className="hover:text-red-400" />
                 </div>
-                <div className="relative">
-                  <ShoppingCart className="hover:text-yellow-600" />
-                </div>{" "}
+                <CartIcon />
               </div>
             )}
 

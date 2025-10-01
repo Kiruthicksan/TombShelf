@@ -14,6 +14,10 @@ import { useBookStore } from "./store/useBookStore";
 import BookDetailsPage from "./pages/BookDetailsPage";
 import { useCartStore } from "./store/useCartStore";
 import GenrePage from "./pages/GenrePage";
+import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/Checkout";
+import OrdersPage from "./pages/Libraries";
+import ConfirmationPage from "./pages/ConfirmationPage";
 
 
 
@@ -99,6 +103,28 @@ const App = () => {
         />
 
         <Route
+          path="/library"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <OrdersPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/confirmation/:id"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <ConfirmationPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/manage-books"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
@@ -112,6 +138,8 @@ const App = () => {
         
 
         {/* Pages without navbar */}
+        <Route path="/cart" element={<CartPage />} />
+         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/register" element={<Register />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/unauthorized" element={<Unauthorized />} />
