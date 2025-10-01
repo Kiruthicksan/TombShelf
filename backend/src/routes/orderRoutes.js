@@ -2,7 +2,7 @@ import express from 'express'
 import { CreateOrder, GetOrderById, GetOrders } from '../controllers/orderController.js'
 
 import protect from '../middleware/authMiddleware.js'
-import authorize from '../middleware/authorize.js'
+
 
 const router = express.Router()
 
