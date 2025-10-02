@@ -76,7 +76,7 @@ const OrdersPage = () => {
                   {order.items.map((item) => (
                     <img
                       key={item.bookId._id}
-                      src={getImageUrl(item.bookId.image)}
+                      src={getImageUrl(item?.bookId?.image)}
                       alt={item.bookId.title}
                       className="w-16 h-20 object-cover rounded"
                       title={`${item.bookId.title} x${item.quantity}`}

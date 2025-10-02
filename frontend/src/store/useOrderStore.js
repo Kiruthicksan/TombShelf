@@ -64,4 +64,38 @@ export const useOrderStore = create((set, get) => ({
 
   // Clear current order (for cleanup on page leave)
   clearCurrentOrder: () => set({ currentOrder: null }),
+
+  // store/useOrderStore.js
+updateOrderStatus: async (orderId, status) => {
+  set({ loading: true });
+  try {
+    const { data } = await api.put(`/admin/orders/${orderId}/status`, { status });
+    set((state) => ({
+      orders: state.orders.map((o) =>
+        o._id === orderId ? { ...o, status: data.order.status } : o
+      ),
+      loading: false,
+    }));
+  } catch (error) {
+    set({
+      error: error.response?.data?.message || "Failed to update order status",
+      loading: false,
+    });
+  }
+},
+
+fetchAllOrders: async () => {
+  set({ loading: true, error: null });
+  try {
+    const { data } = await api.get("/admin/orders"); // your admin route
+    set({ orders: data.orders || [], loading: false });
+  } catch (error) {
+    set({
+      error: error.response?.data?.message || "Failed to fetch all orders",
+      loading: false,
+    });
+  }
+},
+
+
 }));

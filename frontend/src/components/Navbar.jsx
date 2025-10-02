@@ -16,6 +16,7 @@ const Navbar = () => {
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isAdmin = useAuthStore((state) => state.user?.role === "admin");
+  const isReader = useAuthStore((state) => state.user?.role === "reader");
 
   // ---------------------  local states --------------------------
 
@@ -39,7 +40,7 @@ const Navbar = () => {
   const navLinkClasses = ({ isActive }) =>
     `block px-2 py-2 rounded-lg transition-colors duration-200 ${
       isActive ? "text-red-500 font-medium" : "text-[#2C3E50]"
-    } hover:text-red-500`;
+    } hover:text-red-500 md:text-sm`;
 
   //------------------- logic for handling logout ---------------------------------------------------
 
@@ -86,9 +87,12 @@ const Navbar = () => {
                 <NavLink to="/news" className={navLinkClasses}>
                   News
                 </NavLink>
-                <NavLink to="/library" className={navLinkClasses}>
+              {isReader && (
+                  <NavLink to="/library" className={navLinkClasses}>
                   Library
                 </NavLink>
+              )}
+              
               </>
             )}
 
@@ -97,6 +101,7 @@ const Navbar = () => {
             {isAuthenticated && isAdmin && (
               <>
                 <NavLink className={navLinkClasses} to= "/manage-books">Manage Books</NavLink>
+                <NavLink className={navLinkClasses} to= "/manage-orders">Manage Orders</NavLink>
               </>
             )}
           </div>
@@ -144,7 +149,7 @@ const Navbar = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => navigate("/register")}
+                    onClick={() => navigate("/login")}
                     variant="destructive"
                   >
                     Start Reading

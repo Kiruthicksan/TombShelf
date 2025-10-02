@@ -18,6 +18,8 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/Checkout";
 import OrdersPage from "./pages/Libraries";
 import ConfirmationPage from "./pages/ConfirmationPage";
+import ManageOrders from "./pages/ManageOrders";
+import { Toaster } from "./components/ui/sonner";
 
 
 
@@ -113,6 +115,28 @@ const App = () => {
           }
         />
 
+         <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <CartPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+          <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <CheckoutPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/confirmation/:id"
           element={
@@ -123,6 +147,8 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        
 
         <Route
           path="/manage-books"
@@ -135,16 +161,31 @@ const App = () => {
           }
         />
 
+
+        <Route
+          path="/manage-orders"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <MainLayout>
+                <ManageOrders />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+
+
         
 
         {/* Pages without navbar */}
-        <Route path="/cart" element={<CartPage />} />
-         <Route path="/checkout" element={<CheckoutPage />} />
+       
+      
         <Route path="/register" element={<Register />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/unauthorized" element={<Unauthorized />} />
+
       </Routes>
-     
+     <Toaster position ="top-right" richColors/>
     </BrowserRouter>
   );
 };

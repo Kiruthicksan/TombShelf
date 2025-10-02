@@ -85,7 +85,7 @@ const ConfirmationPage = () => {
             size="lg"
             variant="outline"
             className="ml-4"
-            onClick={() => navigate("/orders")}
+            onClick={() => navigate("/library")}
           >
             View My Orders
           </Button>

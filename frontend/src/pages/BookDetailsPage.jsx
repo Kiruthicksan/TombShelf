@@ -41,7 +41,7 @@ const BookDetailsPage = () => {
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
       toast.error("Please login to add items to cart");
-      navigate("/login");
+     
       return;
     }
 
@@ -59,7 +59,7 @@ const BookDetailsPage = () => {
   const handleBuyNow = async () => {
     if (!isAuthenticated) {
       toast.error("Please login to continue");
-      navigate("/login");
+     
       return;
     }
 

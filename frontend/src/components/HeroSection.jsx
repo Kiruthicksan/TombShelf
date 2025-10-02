@@ -5,15 +5,36 @@ import { getImageUrl } from "../utils/image";
 import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
+import { useCartStore } from "@/store/useCartStore";
+import { useAuthStore } from "@/store/store";
+import { toast } from "sonner";
+import { Check, Loader2, ShoppingCart } from "lucide-react";
 
 const HeroSection = () => {
   //  --------------------  book store (global state)-----------------------
 
-  const books = useBookStore((state) => state.books);
+  const { books, book } = useBookStore();
+
+  // ----------- cart store ----------------------------------------
+
+  const {
+    addToCart,
+    isInCart,
+    isLoading: cartLoading,
+    getItemQuantity,
+   
+  } = useCartStore();
+
+  // ---------------------------  auth Store----------------
+
+  const { isAuthenticated } = useAuthStore();
 
   //  .....................local states.....................
   const [recentBooks, setRecentBooks] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [addingToCart, setAddingToCart] = useState(false);
+
+  // --------------------  navigate ----------------------------
   const navigate = useNavigate();
 
   // ---------------------- get newly added books ----------------------------------
@@ -24,6 +45,31 @@ const HeroSection = () => {
       .slice(0, 5);
     setRecentBooks(recent);
   }, [books]);
+
+  //  checking the cart available and quantity
+
+  const bookInCart = isInCart(book?._id);
+  const cartQuantity = getItemQuantity(book?.id);
+
+  //  Add to cart handler--------------------------------
+
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      toast.error("Please login to add items to cart");
+      return;
+    }
+
+    setAddingToCart(true);
+
+    try {
+      await addToCart(currentBook._id, 1);
+      toast.success("Book Added to cart!");
+    } catch (error) {
+      toast.error(error.response?.data.message || "Failed to add cart");
+    } finally {
+      setAddingToCart(false);
+    }
+  };
 
   // -----------------------------------------------Auto-slide---------------------------------------
 
@@ -97,8 +143,28 @@ const HeroSection = () => {
 
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <Button variant="destructive" size="lg">
-                Add to Cart
+              <Button
+                variant="destructive"
+                size="lg"
+                onClick={handleAddToCart}
+                disabled={addingToCart || cartLoading || bookInCart}
+              >
+                {addingToCart ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Adding...
+                  </>
+                ) : bookInCart ? (
+                  <>
+                    <Check className="w-5 h-5 mr-2" />
+                    Added to Cart ({cartQuantity})
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="w-5 h-5 mr-2" />
+                    Add to Cart
+                  </>
+                )}
               </Button>
               <Button
                 size="lg"

@@ -109,3 +109,55 @@ export const GetOrderById = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+
+// Get all orders (Admin only)
+export const GetAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate("user", "userName email") // show user details
+      .populate("items.bookId", "title author image price") // show book details
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      message: "All orders fetched successfully",
+      count: orders.length,
+      orders,
+    });
+  } catch (error) {
+    console.error("GetAllOrders Error:", error);
+    res.status(500).json({ message: "Error fetching orders" });
+  }
+};
+
+// Update order status (Admin only)
+export const UpdateOrderStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    // ✅ validate status
+    const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    const order = await Order.findById(req.params.orderId)
+      .populate("user", "name email")
+      .populate("items.bookId", "title");
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    order.status = status;
+    await order.save();
+
+    res.status(200).json({
+      message: "Order status updated successfully",
+      order,
+    });
+  } catch (error) {
+    console.error("UpdateOrderStatus Error:", error);
+    res.status(500).json({ message: "Failed to update order status" });
+  }
+};
