@@ -16,6 +16,7 @@ const CartItemSchema = new mongoose.Schema({
   price: {
     type: Number,
     required: true,
+    min: 0
   },
 });
 
@@ -30,7 +31,8 @@ const cartSchema = new mongoose.Schema({
   totalAmount: {
     type : Number,
     required : true,
-    min: 0
+    min: 0,
+    default: 0
   },
 
    status: {

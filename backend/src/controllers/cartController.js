@@ -22,7 +22,7 @@ const finalizeCart = async (cart) => {
 // ----------------------------------------------------
 export const AddToCart = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     const { bookId, quantity = 1 } = req.body;
 
     if (!bookId) {
@@ -73,7 +73,7 @@ export const AddToCart = async (req, res) => {
 // ----------------------------------------------------
 export const GetCarts = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     let cart = await Cart.findOne({ user: userId, status: "active" })
       .populate("items.bookId", "title author image price")
       .sort({ createdAt: -1 });
@@ -101,7 +101,7 @@ export const GetCarts = async (req, res) => {
 // ----------------------------------------------------
 export const UpdateCartItem = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     const { bookId } = req.params;
     const { quantity } = req.body;
 
@@ -138,7 +138,7 @@ export const UpdateCartItem = async (req, res) => {
 // ----------------------------------------------------
 export const RemoveFromCart = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     const { bookId } = req.params;
 
     const cart = await Cart.findOne({ user: userId, status: "active" });
@@ -165,7 +165,7 @@ export const RemoveFromCart = async (req, res) => {
 // ----------------------------------------------------
 export const ClearCart = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     const cart = await Cart.findOne({ user: userId, status: "active" });
     if (!cart) return res.status(404).json({ message: "Cart not found" });

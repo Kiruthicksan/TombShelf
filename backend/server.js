@@ -1,13 +1,16 @@
-import express from 'express'
 import dotenv from 'dotenv'
+dotenv.config()
+import express from 'express'
+
 import cors from 'cors'
 import ConnectDb from './src/config/db.js'
 import authRoutes from './src/routes/authRoutes.js'
 import bookRoutes from './src/routes/bookRoutes.js'
 import orderRoutes from './src/routes/orderRoutes.js'
 import cartRoutes from './src/routes/cartRoutes.js'
+import paymentRoutes from "./src/routes/paymentRoutes.js"
 import cookieParser from 'cookie-parser'
-dotenv.config()
+
 
 const app = express()
 const port = process.env.PORT
@@ -26,6 +29,8 @@ app.use('/api', authRoutes)
 app.use('/api', bookRoutes)
 app.use('/api', orderRoutes)
 app.use('/api', cartRoutes)
+app.use('/api', paymentRoutes)
+
 
 
 async function connection() {
