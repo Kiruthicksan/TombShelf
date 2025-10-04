@@ -1,12 +1,28 @@
 import { Separator } from "@radix-ui/react-select";
 import { Card, CardContent } from "./ui/card";
-
+import { useRef } from "react";
 
 const BookCard = ({ title, books, navigate, getImageUrl }) => {
-  
-  
+  // --------------- ref for scroll container ----------------
 
-  
+  const scrollContainerRef = useRef(null);
+  const isScrolling = useRef(false)
+  //  ------------------------ handle for scroll event ----------------
+
+  const handleWheel = (e) => {
+    if (scrollContainerRef.current && !isScrolling.current) {
+      isScrolling.current(true)
+      e.preventDefault();
+      const container = scrollContainerRef.current
+      const scrollAmount = e.deltaY 
+
+      container.scrollBy({
+        left : scrollAmount,
+        behavior : 'smooth'
+      })
+    }
+  };
+
   return (
     <div className="mb-10">
       <h1 className="text-2xl font-bold text-gray-800 mb-3 font-[Inter] tracking-wide">
@@ -14,9 +30,13 @@ const BookCard = ({ title, books, navigate, getImageUrl }) => {
       </h1>
 
       <div
+        ref={scrollContainerRef}
         className="flex gap-6  py-3 cursor-grab active:cursor-grabbing  overflow-x-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-300"
-       
-       
+        onWheel={handleWheel}
+          style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
       >
         {books.map((book) => (
           <Card

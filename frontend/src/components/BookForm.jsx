@@ -406,30 +406,7 @@ const BookForm = ({
               )}
             </div>
            
-            <div className="space-y-2">
-              <Label>TotalVolumes </Label>
-              <Input
-                type="number"
-                id="totalVolumes"
-                placeholder = "Total Volumes"
-                onChange={(e) => handleChange("totalVolumes", e.target.value)}
-              />
-              {errors.seriesTitle && (
-                <p className="text-red-500 text-sm">{errors.seriesTitle}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label>Language </Label>
-              <Input
-                type="text"
-                id="language"
-                placeholder = "Language"
-                onChange={(e) => handleChange("language", e.target.value)}
-              />
-              {errors.seriesTitle && (
-                <p className="text-red-500 text-sm">{errors.seriesTitle}</p>
-              )}
-            </div>
+           
           </div>
           <div className="space-y-2 ">
             <Label>Description *</Label>

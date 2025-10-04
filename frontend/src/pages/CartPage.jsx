@@ -1,6 +1,6 @@
 import { useCartStore } from "@/store/useCartStore";
 import { useAuthStore } from "@/store/store";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useEffect } from "react";
@@ -12,7 +12,6 @@ const CartPage = () => {
   const {
     cart,
     fetchCart,
-    addToCart,
     removeFromCart,
     clearCart,
     updateCartItemQuantity,
@@ -26,136 +25,242 @@ const CartPage = () => {
     if (isAuthenticated) fetchCart();
   }, [isAuthenticated, fetchCart]);
 
-  if (!isAuthenticated) {
-    return (
-      <p className="text-center mt-10 text-gray-500">
-        Please login to view your cart.
-      </p>
-    );
-  }
-
-  if (loading) {
-    return <p className="text-center mt-10">Loading cart...</p>;
-  }
-
-  if (!cart || cart.items.length === 0) {
-    return (
-      <p className="text-center mt-10 text-gray-500">
-        Your cart is empty.
-      </p>
-    );
-  }
-
-  const handleIncrement = async (bookId, quantity) => {
+  // Handle quantity updates
+  const handleQuantityChange = async (bookId, newQuantity) => {
+    if (newQuantity < 1) return;
+    
     try {
-      await updateCartItemQuantity(bookId, quantity + 1);
+      await updateCartItemQuantity(bookId, newQuantity);
     } catch (error) {
       toast.error(error.message || "Failed to update quantity");
     }
   };
 
-  const handleDecrement = async (bookId, quantity) => {
-    if (quantity <= 1) return; // prevent going below 1
-    try {
-      await updateCartItemQuantity(bookId, quantity - 1);
-    } catch (error) {
-      toast.error(error.message || "Failed to update quantity");
-    }
-  };
-
-  const handleRemove = async (bookId) => {
+  const handleRemove = async (bookId, bookTitle) => {
     try {
       await removeFromCart(bookId);
-      toast.success("Item removed from cart");
+      toast.success(`"${bookTitle}" removed from cart`);
     } catch (error) {
       toast.error(error.message || "Failed to remove item");
     }
   };
 
   const handleClearCart = async () => {
+    if (cart.items.length === 0) return;
+    
     try {
       await clearCart();
-      toast.success("Cart cleared");
+      toast.success("Cart cleared successfully");
     } catch (error) {
       toast.error(error.message || "Failed to clear cart");
     }
   };
 
   const handleCheckout = () => {
+    if (cart.items.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
     navigate("/checkout");
   };
 
-  return (
-    <div className="min-h-screen bg-background px-4 py-8 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">Your Cart</h1>
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your cart...</p>
+        </div>
+      </div>
+    );
+  }
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-        {/* Cart Items */}
-        <div className="md:col-span-8 space-y-4">
-          {cart.items.map((item) => (
-            <Card key={item.bookId._id} className="p-4 flex flex-col md:flex-row gap-4 items-center">
-              <img
-                src={getImageUrl(item.bookId.image) }
-                alt={item.bookId.title}
-                className="w-32 h-40 object-cover"
-              />
-              <CardContent className="flex-1 flex flex-col justify-between">
-                <div>
-                  <h2 className="font-semibold text-lg">{item.bookId.title}</h2>
-                  <p className="text-sm text-muted-foreground">{item.bookId.author}</p>
-                  <p className="mt-1 font-medium">₹ {item.price}</p>
-                </div>
-                <div className="mt-4 flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    onClick={() => handleDecrement(item.bookId._id, item.quantity)}
-                  >
-                    -
-                  </Button>
-                  <span className="px-2">{item.quantity}</span>
-                  <Button
-                    size="sm"
-                    onClick={() => handleIncrement(item.bookId._id, item.quantity)}
-                  >
-                    +
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => handleRemove(item.bookId._id)}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+  // Authentication check
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <Card className="max-w-md w-full p-8 text-center">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">🔒</span>
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Authentication Required</h2>
+          <p className="text-gray-600 mb-6">Please log in to view your cart</p>
+          <Button 
+            onClick={() => navigate("/login")}
+            className="w-full bg-indigo-600 hover:bg-indigo-700"
+          >
+            Sign In
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
+  // Empty cart state
+  if (!cart || cart.items.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <Card className="max-w-md w-full p-8 text-center">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">🛒</span>
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
+          <p className="text-gray-600 mb-6">Add some books to get started</p>
+          <Button 
+            onClick={() => navigate("/")}
+            className="w-full bg-indigo-600 hover:bg-indigo-700"
+          >
+            Continue Shopping
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
+  const totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
+          <p className="text-gray-600 mt-2">
+            {totalItems} item{totalItems !== 1 ? 's' : ''} in your cart
+          </p>
         </div>
 
-        {/* Cart Summary */}
-        <div className="md:col-span-4 space-y-4">
-          <Card className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-            <div className="flex justify-between mb-2">
-              <span>Subtotal:</span>
-              <span>₹ {cart.totalAmount}</span>
-            </div>
-            <div className="flex justify-between mb-2">
-              <span>Items:</span>
-              <span>{cart.items.reduce((sum, item) => sum + item.quantity, 0)}</span>
-            </div>
-            <Separator className="my-2" />
-            <Button className="w-full mb-2" onClick={handleCheckout}>
-              Proceed to Checkout
-            </Button>
-            <Button
-              variant="destructive"
-              className="w-full"
-              onClick={handleClearCart}
-            >
-              Clear Cart
-            </Button>
-          </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Cart Items Section */}
+          <div className="lg:col-span-8 space-y-4">
+            {cart.items.map((item) => (
+              <Card key={item.bookId._id} className="p-6 hover:shadow-lg transition-shadow duration-200">
+                <div className="flex flex-col sm:flex-row gap-6">
+                  {/* Book Image */}
+                  <div className="flex-shrink-0">
+                    <img
+                      src={getImageUrl(item.bookId.image)}
+                      alt={item.bookId.title}
+                      className="w-24 h-32 sm:w-28 sm:h-36 object-cover rounded-lg shadow-md"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://placehold.co/112x144/EEE/CCC?text=No+Image";
+                      }}
+                    />
+                  </div>
+
+                  {/* Book Details */}
+                  <div className="flex-1 flex flex-col">
+                    <div className="flex-1">
+                      <h2 className="font-semibold text-lg text-gray-900 mb-1 line-clamp-2">
+                        {item.bookId.title}
+                      </h2>
+                      <p className="text-gray-600 text-sm mb-2">by {item.bookId.author}</p>
+                      <p className="text-lg font-bold text-green-600 mb-4">
+                        ₹{item.price}
+                      </p>
+                    </div>
+
+                    {/* Quantity Controls */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm text-gray-600 font-medium">Quantity:</span>
+                        <div className="flex items-center gap-2 border border-gray-300 rounded-lg">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 hover:bg-gray-100"
+                            onClick={() => handleQuantityChange(item.bookId._id, item.quantity - 1)}
+                            disabled={item.quantity <= 1}
+                          >
+                            -
+                          </Button>
+                          <span className="w-8 text-center font-medium">{item.quantity}</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 hover:bg-gray-100"
+                            onClick={() => handleQuantityChange(item.bookId._id, item.quantity + 1)}
+                          >
+                            +
+                          </Button>
+                        </div>
+                      </div>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                        onClick={() => handleRemove(item.bookId._id, item.bookId.title)}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+
+                    {/* Item Total */}
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Item Total:</span>
+                        <span className="font-semibold text-gray-900">
+                          ₹{(item.price * item.quantity).toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          {/* Order Summary */}
+          <div className="lg:col-span-4">
+            <Card className="p-6 sticky top-4">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
+              
+              <div className="space-y-3 mb-6">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Items ({totalItems})</span>
+                  <span className="text-gray-900">₹{cart.totalAmount}</span>
+                </div>
+                
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Shipping</span>
+                  <span className="text-green-600">Free</span>
+                </div>
+                
+                <Separator className="my-4" />
+                
+                <div className="flex justify-between text-lg font-bold">
+                  <span>Total Amount</span>
+                  <span className="text-green-600">₹{cart.totalAmount}</span>
+                </div>
+              </div>
+
+              <Button 
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white mb-3 py-3 text-base font-semibold"
+                onClick={handleCheckout}
+              >
+                Proceed to Checkout
+              </Button>
+
+              <Button
+                variant="outline"
+                className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
+                onClick={handleClearCart}
+              >
+                Clear Cart
+              </Button>
+
+              {/* Security Badge */}
+              <div className="mt-6 pt-6 border-t border-gray-200 text-center">
+                <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                  <span>🔒</span>
+                  <span>Secure checkout</span>
+                </div>
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
     </div>

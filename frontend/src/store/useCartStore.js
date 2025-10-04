@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import { api } from "@/services/api"; // adjust the path to your api.js file
-
+import { api } from "@/services/api"; 
 export const useCartStore = create((set, get) => ({
   cart: null,
   loading: false,
@@ -10,7 +9,8 @@ export const useCartStore = create((set, get) => ({
     set({ loading: true, error: null });
     try {
       const { data } = await api.get("/cart");
-      set({ cart: data.cart, loading: false }); // notice data.cart
+      set({ cart: data.cart, loading: false }); 
+      return data.cart
     } catch (error) {
       set({ error: error.response?.data?.message || "Failed to fetch cart", loading: false });
     }

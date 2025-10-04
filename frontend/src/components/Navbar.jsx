@@ -84,9 +84,6 @@ const Navbar = () => {
 
             {isAuthenticated && (
               <>
-                <NavLink to="/news" className={navLinkClasses}>
-                  News
-                </NavLink>
               {isReader && (
                   <NavLink to="/library" className={navLinkClasses}>
                   Library

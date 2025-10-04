@@ -4,6 +4,19 @@ import { getImageUrl } from "../utils/image";
 import { useNavigate } from "react-router-dom";
 import BookCard from "./BookCard";
 
+ const filterBooksByGenre = (books,genre) => {
+    return useMemo(() => {
+      if (!genre) return books
+
+      return books.filter((book) => {
+        if (!book.genre) return false
+
+       const genresLower = book.genre.map((g) => g.trim().toLowerCase())
+       return genresLower.includes(genre.toLowerCase())
+      })
+    }, [books,genre])
+  }
+
 const BookComponent = () => {
   // -----------------------------book store------------------------
   const books = useBookStore((state) => state.books);
@@ -30,17 +43,9 @@ const BookComponent = () => {
     [books]
   );
 
-  const action = useMemo(() => {
-    return books.filter((book) => {
-      if (Array.isArray(book.genre)) {
-        const genres = book.genre.flatMap((g) =>
-          g.split(",").map((x) => x.trim().toLowerCase())
-        );
-        return genres.includes("action");
-      }
-      return false;
-    });
-  }, [books]);
+   const action = filterBooksByGenre(books, "action")
+   const romance = filterBooksByGenre(books, "romance")
+ 
 
   
 
@@ -71,6 +76,13 @@ const BookComponent = () => {
       <BookCard
         title="Action Novels"
         books={action}
+        navigate={navigate}
+        getImageUrl={getImageUrl}
+      />
+
+        <BookCard
+        title="Romance Novels"
+        books={romance}
         navigate={navigate}
         getImageUrl={getImageUrl}
       />

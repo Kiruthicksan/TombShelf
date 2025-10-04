@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuthStore } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { toast } from "sonner";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -38,6 +39,7 @@ const LoginPage = () => {
     try {
       await login(email, password);
       navigate("/");
+      toast.success("Logged In Suceesfully")
     } catch (error) {
       setErrorMessage(error.message || "Something Went Wrong");
     } finally {

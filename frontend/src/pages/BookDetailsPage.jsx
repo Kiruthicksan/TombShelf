@@ -1,4 +1,4 @@
-// pages/BookDetailsPage.jsx
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -119,7 +119,7 @@ const BookDetailsPage = () => {
           {/* Left Column - Book image */}
           <div className="lg:col-span-1">
             <div className="sticky top-8">
-              <Card className="overflow-hidden">
+              <Card className="overflow-hidden p-0">
                 <CardContent className="p-0">
                   <img
                     src={getImageUrl(book.image)}

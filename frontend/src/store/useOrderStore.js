@@ -14,6 +14,7 @@ export const useOrderStore = create((set, get) => ({
     try {
       const { data } = await api.get("/orders");
       set({ orders: data.orders || [], loading: false });
+      return data.orders
     } catch (error) {
       set({
         error: error.response?.data?.message || "Failed to fetch orders",
