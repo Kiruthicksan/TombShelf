@@ -65,7 +65,7 @@ export const useAuthStore = create((set, get) => ({
         isAuthenticated: true,
         isLoading: false,
       });
-      return response.data.user
+      return response.data.user;
     } catch (error) {
       set({
         user: null,
@@ -73,7 +73,7 @@ export const useAuthStore = create((set, get) => ({
         error: error.response?.data?.message || error.message,
         isLoading: false,
       });
-      return  null
+      return null;
     }
   },
 
@@ -108,8 +108,38 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
- hasRole: (role) => get().user?.role === role,
-hasAnyRole: (roles = []) => roles.includes(get().user?.role),
+  forgotPassword: async (email) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await api.post("/auth/reset", { email });
+      return response.data;
+    } catch (error) {
+      set({
+        error: error.response?.data?.message || "Failed to send reset link",
+      });
+      throw error;
+    } finally {
+      set({ loading: false });
+    }
+  },
+  resetPassword: async (token, newPassword) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await api.post("/auth/reset-password", {
+        token,
+        newPassword,
+      });
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to reset password";
+      set({ error: errorMessage });
+      throw new Error(errorMessage);
+    } finally {
+      set({ loading: false });
+    }
+  },
 
-
+  hasRole: (role) => get().user?.role === role,
+  hasAnyRole: (roles = []) => roles.includes(get().user?.role),
 }));

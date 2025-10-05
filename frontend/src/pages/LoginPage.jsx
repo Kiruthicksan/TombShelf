@@ -10,8 +10,10 @@ const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
 
   const login = useAuthStore((state) => state.login);
+  const { forgotPassword } = useAuthStore();
   const navigate = useNavigate();
 
   const handleValidation = () => {
@@ -31,20 +33,38 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-     if (!handleValidation()) return;
+    if (!handleValidation()) return;
     setIsLoading(true);
     setErrorMessage("");
-   
+
     setIsLoading(true);
     try {
       await login(email, password);
       navigate("/");
-      toast.success("Logged In Suceesfully")
+      toast.success("Logged In Suceesfully");
     } catch (error) {
       setErrorMessage(error.message || "Something Went Wrong");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email.trim()){
+      setErrorMessage("Please enter your email")
+      return
+    }
+
+    setForgotPasswordLoading(true)
+
+  try {
+    await forgotPassword(email)
+    toast.success("Password reset link sent to your email")
+  } catch (error) {
+    toast.error("Failed to send reset link. Please try again later")
+  }finally{
+    setForgotPasswordLoading(false)
+  }
   };
   return (
     <div className="flex justify-center items-center h-screen px-4">
@@ -88,6 +108,16 @@ const LoginPage = () => {
               <AiOutlineEye size={20} />
             )}
           </span>
+        </div>
+        <div className="text-right mb-6">
+          <button
+            type="button"
+            onClick={handleForgotPassword}
+            disabled={forgotPasswordLoading}
+            className="text-blue-500 hover:text-blue-700 text-sm font-medium hover:underline transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {forgotPasswordLoading ? "Sending..." : "Forgot Password?"}
+          </button>
         </div>
 
         <button
