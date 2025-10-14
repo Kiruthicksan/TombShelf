@@ -1,8 +1,7 @@
 import Stripe from "stripe";
 import Order from "../models/orderSchema.js";
-import dotenv from "dotenv"
-dotenv.config()
-
+import dotenv from "dotenv";
+dotenv.config();
 
 const stripe = new Stripe(process.env.STRIPEKEY, {
   apiVersion: "2022-11-15",
@@ -16,7 +15,7 @@ export const payment = async (req, res) => {
       return res.status(401).json({ error: "User authentication required" });
     }
 
-    // Store complete items data in metadata
+   
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
@@ -46,7 +45,7 @@ export const payment = async (req, res) => {
       cancel_url: "http://localhost:5173/cancel",
     });
 
-    console.log("Stripe session created with metadata:", session.metadata);
+  
 
     res.json({ url: session.url });
   } catch (error) {
@@ -58,28 +57,28 @@ export const confirmOrder = async (req, res) => {
   try {
     const { sessionId } = req.body;
 
-    console.log("=== CONFIRM ORDER DEBUG ===");
+  
     console.log("Session ID:", sessionId);
 
     if (!sessionId) {
       return res.status(400).json({ error: "Session ID is required" });
     }
 
-    // Get session info from Stripe
+ 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     console.log("Session metadata:", session.metadata);
     console.log("Payment status:", session.payment_status);
 
-    // Check if payment was successful
+   
     if (session.payment_status !== "paid") {
       return res.status(400).json({ error: "Payment not completed" });
     }
 
-    // Get items from session metadata (not from line_items)
+  
     const itemsData = JSON.parse(session.metadata.items);
     const items = itemsData.map((item) => ({
-      bookId: item.bookId, // This is your MongoDB book ID
+      bookId: item.bookId,
       quantity: item.quantity,
       price: item.price,
     }));
