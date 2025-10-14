@@ -1,5 +1,5 @@
 import express from "express";
-import upload from "../config/cloudinary.js";
+import upload from "../middleware/upload.js";
 import { uploadImage } from "../controllers/uploadController.js";
 
 
