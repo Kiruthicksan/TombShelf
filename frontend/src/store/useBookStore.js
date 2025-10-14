@@ -41,51 +41,38 @@ export const useBookStore = create((set, get) => ({
     }
   },
 
- createBook: async (data) => {
-  set({ isLoading: true, error: null });
-  try {
- 
-    if (data.image instanceof File) {
-      const formData = new FormData();
-      formData.append("image", data.image);
-      const uploadRes = await api.post("/upload", formData, {
+  createBook: async (data) => {
+    set({ isLoading: true, error: null });
+    try {
+      const form = new FormData();
+      for (const key in data){
+        if(Array.isArray(data[key])){
+          data[key].forEach(item => {
+            form.append(key, item);
+          })
+        }else{
+          form.append(key,data[key])
+        }
+      }
+      const response = await api.post("/books", form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      data.image = uploadRes.data.imageUrl;
+      set((state) => ({
+        books: [...state.books, response.data.book],
+        isLoading: false,
+        error: null,
+      }));
+      return response.data.book;
+    } catch (error) {
+      set({
+        error:
+          error?.response?.data?.message ||
+          error.message ||
+          "Error while publishing Book",
+        isLoading: false,
+      });
     }
-
-   
-    const form = new FormData();
-    for (const key in data) {
-      if (Array.isArray(data[key])) {
-        data[key].forEach((item) => form.append(key, item));
-      } else {
-        form.append(key, data[key]);
-      }
-    }
-
-    
-    const response = await api.post("/books", form, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-
-    set((state) => ({
-      books: [...state.books, response.data.book],
-      isLoading: false,
-      error: null,
-    }));
-
-    return response.data.book;
-  } catch (error) {
-    set({
-      error:
-        error?.response?.data?.message ||
-        error.message ||
-        "Error while publishing Book",
-      isLoading: false,
-    });
-  }
-},
+  },
 
   updateBook: async (id, data) => {
     set({ isLoading: true, error: null });
