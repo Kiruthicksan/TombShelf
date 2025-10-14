@@ -17,7 +17,7 @@ const port = process.env.PORT
 
 app.use(express.json())
 app.use(cors({
-     origin: "https://tomeshelf.netlify.app/",
+     origin: "https://tomeshelf.netlify.app",
      
      credentials: true
 }))
