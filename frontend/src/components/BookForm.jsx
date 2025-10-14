@@ -22,7 +22,7 @@ import { Button } from "./ui/button";
 import { useBookStore } from "@/store/useBookStore";
 import { X } from "lucide-react";
 
-// Helper component for the pastel badge
+
 const PastelBadge = ({ genre, onRemove }) => {
   const colors = [
     "bg-red-200 text-red-800",
@@ -32,7 +32,7 @@ const PastelBadge = ({ genre, onRemove }) => {
     "bg-purple-200 text-purple-800",
     "bg-pink-200 text-pink-800",
   ];
-  // Simple hash function to get a consistent color for a genre
+
   const colorIndex =
     genre.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
     colors.length;
@@ -103,7 +103,7 @@ const BookForm = ({
   const [genreSuggestion, setGenreSuggestion] = useState([]);
   const [genreInput, setGenreInput] = useState("");
 
-  // render based on mode
+
 
   useEffect(() => {
     if (book && mode === "edit") {
