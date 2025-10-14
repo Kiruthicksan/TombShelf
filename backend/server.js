@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use("/uploads", express.static("uploads"));
 app.use("/api", authRoutes);
 app.use("/api", bookRoutes);
-app.use("/api", uploadRoute)
+
 app.use("/api", orderRoutes);
 app.use("/api", cartRoutes);
 app.use("/api", paymentRoutes);
