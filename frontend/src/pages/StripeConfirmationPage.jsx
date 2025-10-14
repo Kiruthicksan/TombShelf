@@ -6,10 +6,14 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { api } from "@/services/api";
 
+import { useCartStore } from "@/store/useCartStore";
+
 const StripeConfirmationPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+
+  const {clearCart} = useCartStore()
 
   useEffect(() => {
     const sessionId = searchParams.get('session_id');
@@ -33,8 +37,9 @@ const StripeConfirmationPage = () => {
       console.log("Stripe confirmation response:", response.data);
       
       if (response.data.order && response.data.order._id) {
-        // Redirect to the regular confirmation page with order ID
+        await clearCart()
         navigate(`/confirmation/${response.data.order._id}`, { replace: true });
+        
       } else {
         throw new Error("No order ID in response");
       }

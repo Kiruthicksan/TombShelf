@@ -309,36 +309,8 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 font-bold">?</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Need Help?</h3>
-                  <p className="text-sm text-gray-600">Contact support</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                  <span className="text-green-600 font-bold">!</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Privacy</h3>
-                  <p className="text-sm text-gray-600">View privacy policy</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+      
+       
       </div>
     </div>
   );

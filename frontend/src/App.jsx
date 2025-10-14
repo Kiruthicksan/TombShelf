@@ -23,12 +23,16 @@ import { Toaster } from "./components/ui/sonner";
 import StripeConfirmationPage from "./pages/StripeConfirmationPage";
 import { useOrderStore } from "./store/useOrderStore";
 import ResetPasswordPage from "./pages/PasswordResetPage";
+import Footer from "./pages/Footer";
+import AboutPage from "./pages/HelpPage";
+import HelpPage from "./pages/HelpPage";
 
 const MainLayout = ({ children }) => {
   return (
     <>
       <Navbar />
       {children}
+      <Footer />
     </>
   );
 };
@@ -107,6 +111,17 @@ const App = () => {
             <ProtectedRoute>
               <MainLayout>
                 <OrdersPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+          <Route
+          path="/help"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <HelpPage />
               </MainLayout>
             </ProtectedRoute>
           }

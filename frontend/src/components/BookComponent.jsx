@@ -45,6 +45,8 @@ const BookComponent = () => {
 
    const action = filterBooksByGenre(books, "action")
    const romance = filterBooksByGenre(books, "romance")
+   const adventure = filterBooksByGenre(books, "adventure")
+  
  
 
   
@@ -86,6 +88,14 @@ const BookComponent = () => {
         navigate={navigate}
         getImageUrl={getImageUrl}
       />
+
+        <BookCard
+        title="Adventure Novels"
+        books={adventure}
+        navigate={navigate}
+        getImageUrl={getImageUrl}
+      />
+     
     </section>
   );
 };

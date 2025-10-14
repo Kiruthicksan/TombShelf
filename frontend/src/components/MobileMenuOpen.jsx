@@ -5,28 +5,35 @@ const MobileMenuOpen = ({
   isMobileMenuOpen,
   navLinkClasses,
   isAuthenticated,
+  isAdmin,
+  isReader
 }) => {
   return (
     <>
       <div>
         {isMobileMenuOpen && (
           <div className="md:hidden w-full bg-white shadow-lg border-t border-gray-200 flex flex-col animate-slide-down">
-            <div className="p-4">
-              <input
-                type="search"
-                placeholder="Search for books..."
-                className="w-full h-10 rounded-lg border border-[#BDC3C7] px-4 text-sm outline-none placeholder:text-[#BDC3C7] focus:border-[#3498DB]"
-              />
-            </div>
+           
             <NavLink to="/" className={navLinkClasses}>
               Home
             </NavLink>
-            <NavLink to="/genres" className={navLinkClasses}>
-              Genres
+            <NavLink to="/genre" className={navLinkClasses}>
+             Novels
             </NavLink>
-            <NavLink to="/category" className={navLinkClasses}>
-              Category
+            <NavLink to="/library" className={navLinkClasses}>
+              Library
             </NavLink>
+            {isAuthenticated && isReader && (
+              <>
+               <NavLink className={navLinkClasses} to= "/help">About Us</NavLink>
+              </>
+            ) }
+            {isAuthenticated && isAdmin && (
+              <>
+                <NavLink className={navLinkClasses} to= "/manage-books">Manage Books</NavLink>
+                <NavLink className={navLinkClasses} to= "/manage-orders">Manage Orders</NavLink>
+              </>
+            )}
            
           </div>
         )}

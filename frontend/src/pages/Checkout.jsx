@@ -282,7 +282,7 @@ const CheckoutPage = () => {
                   <label htmlFor="online" className="flex-1 cursor-pointer">
                     <span className="font-medium">Online Payment</span>
                     <p className="text-sm text-gray-600">
-                      Pay securely with cards/UPI/Netbanking
+                      Pay securely with cards
                     </p>
                   </label>
                 </div>

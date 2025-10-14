@@ -83,7 +83,7 @@ const OrdersPage = () => {
                   <tr 
                     key={order._id}
                     className="hover:bg-gray-50 cursor-pointer transition-colors"
-                    onClick={() => navigate(`/orders/${order._id}`)}
+                   
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
@@ -126,16 +126,7 @@ const OrdersPage = () => {
                       {formatCurrency(order.totalAmount)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/orders/${order._id}`);
-                        }}
-                      >
-                        View
-                      </Button>
+                     
                     </td>
                   </tr>
                 );

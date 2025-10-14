@@ -21,7 +21,6 @@ const Navbar = () => {
   // ---------------------  local states --------------------------
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isGenreOpen, setIsGenreOpen] = useState(false);
 
   // ------------ navigate ----------------------------------------
 
@@ -59,16 +58,6 @@ const Navbar = () => {
               className="h-[28px]"
             />
           </NavLink>
-
-          {/* ------------------------------- Desktop search -------------------------------------------------- */}
-          <div className="relative hidden md:flex">
-            <input
-              type="search"
-              placeholder="Search for books..."
-              className="h-8 w-64 rounded-lg border border-[#BDC3C7] bg-white px-3 pr-8 text-sm outline-none placeholder:text-[#BDC3C7] focus:border-[#3498DB]"
-            />
-            <HiOutlineSearch className="absolute right-2 top-1/2 -translate-y-1/2 text-[#BDC3C7]" />
-          </div>
         </div>
 
         {/* --------------------------Center: Nav links + Search (desktop only) -------------------*/}
@@ -79,17 +68,21 @@ const Navbar = () => {
             </NavLink>
 
             <NavLink to="/genre" className={navLinkClasses}>
-             Novels
+              Novels
             </NavLink>
 
             {isAuthenticated && (
               <>
-              {isReader && (
-                  <NavLink to="/library" className={navLinkClasses}>
-                  Library
-                </NavLink>
-              )}
-              
+                {isReader && (
+                  <>
+                    <NavLink to="/library" className={navLinkClasses}>
+                      Library
+                    </NavLink>
+                    <NavLink to="/help" className={navLinkClasses}>
+                      About us
+                    </NavLink>
+                  </>
+                )}
               </>
             )}
 
@@ -97,8 +90,12 @@ const Navbar = () => {
 
             {isAuthenticated && isAdmin && (
               <>
-                <NavLink className={navLinkClasses} to= "/manage-books">Manage Books</NavLink>
-                <NavLink className={navLinkClasses} to= "/manage-orders">Manage Orders</NavLink>
+                <NavLink className={navLinkClasses} to="/manage-books">
+                  Manage Books
+                </NavLink>
+                <NavLink className={navLinkClasses} to="/manage-orders">
+                  Manage Orders
+                </NavLink>
               </>
             )}
           </div>
@@ -119,9 +116,6 @@ const Navbar = () => {
           <div className="relative  gap-5 flex items-center">
             {isAuthenticated && (
               <div className="hidden md:flex gap-4">
-                <div>
-                  <Heart className="hover:text-red-400" />
-                </div>
                 <CartIcon />
               </div>
             )}
@@ -165,6 +159,9 @@ const Navbar = () => {
       <MobileMenuOpen
         isMobileMenuOpen={isMobileMenuOpen}
         navLinkClasses={navLinkClasses}
+        isAuthenticated={isAuthenticated}
+        isAdmin={isAdmin}
+        isReader = {isReader}
       />
     </header>
   );

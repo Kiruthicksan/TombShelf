@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuthStore } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { toast } from "sonner";
 
 const Register = () => {
   //  used default forms for my pratcie .
@@ -51,6 +52,7 @@ const Register = () => {
       const res = await register(userName, email, password);
       if (res?.message || res?.user) {
         await login(email, password);
+        toast.success("Registration Successful")
         navigate("/");
       }
     } catch (error) {
