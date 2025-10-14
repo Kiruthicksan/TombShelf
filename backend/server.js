@@ -6,6 +6,7 @@ import cors from "cors";
 import ConnectDb from "./src/config/db.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import bookRoutes from "./src/routes/bookRoutes.js";
+import uploadRoute from "./src/routes/uploadRoute.js"
 import orderRoutes from "./src/routes/orderRoutes.js";
 import cartRoutes from "./src/routes/cartRoutes.js";
 import paymentRoutes from "./src/routes/paymentRoutes.js";
@@ -29,6 +30,7 @@ app.use(cookieParser());
 app.use("/uploads", express.static("uploads"));
 app.use("/api", authRoutes);
 app.use("/api", bookRoutes);
+app.use("/api", uploadRoute)
 app.use("/api", orderRoutes);
 app.use("/api", cartRoutes);
 app.use("/api", paymentRoutes);
