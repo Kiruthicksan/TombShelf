@@ -6,11 +6,12 @@ import cors from "cors";
 import ConnectDb from "./src/config/db.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import bookRoutes from "./src/routes/bookRoutes.js";
-import uploadRoute from "./src/routes/uploadRoute.js"
+import uploadRoute from "./src/routes/uploadRoute.js";
 import orderRoutes from "./src/routes/orderRoutes.js";
 import cartRoutes from "./src/routes/cartRoutes.js";
 import paymentRoutes from "./src/routes/paymentRoutes.js";
 import cookieParser from "cookie-parser";
+import path from "path"
 
 const app = express();
 const port = process.env.PORT;
@@ -18,8 +19,7 @@ const port = process.env.PORT;
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://tomeshelf.netlify.app",
-
+    origin: ["https://tomeshelf.netlify.app", "http://localhost:5173"],
     credentials: true,
   })
 );
@@ -27,10 +27,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Routes
-app.use("/uploads", express.static("uploads"));
+if (process.env.NODE_ENV !== 'production') {
+  app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+}
 app.use("/api", authRoutes);
 app.use("/api", bookRoutes);
-
+app.use("/api", uploadRoute)
 app.use("/api", orderRoutes);
 app.use("/api", cartRoutes);
 app.use("/api", paymentRoutes);
