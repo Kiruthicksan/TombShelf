@@ -77,22 +77,7 @@ const upload = multer({
   }
 });
 
-// ✅ Add file upload event logging
-upload.single('image')._middleware = function(req, res, next) {
-  console.log('🔄 Multer middleware called for file upload');
-  this(req, res, function(err) {
-    if (err) {
-      console.error('❌ Multer error:', err);
-    } else if (req.file) {
-      console.log('✅ File processed by Multer:', {
-        storage: process.env.NODE_ENV === 'production' ? 'Cloudinary' : 'Local',
-        filename: req.file.filename,
-        path: req.file.path,
-        size: req.file.size
-      });
-    }
-    next(err);
-  });
-};
+
+
 
 export default upload;

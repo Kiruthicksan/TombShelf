@@ -12,6 +12,7 @@ import cartRoutes from "./src/routes/cartRoutes.js";
 import paymentRoutes from "./src/routes/paymentRoutes.js";
 import cookieParser from "cookie-parser";
 import path from "path"
+import upload from "./src/middleware/upload.js";
 
 const app = express();
 const port = process.env.PORT;
@@ -32,7 +33,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 app.use("/api", authRoutes);
 app.use("/api", bookRoutes);
-app.use("/api", uploadRoute)
+app.use("/api/upload", upload.single('image'), uploadRoute)
 app.use("/api", orderRoutes);
 app.use("/api", cartRoutes);
 app.use("/api", paymentRoutes);
