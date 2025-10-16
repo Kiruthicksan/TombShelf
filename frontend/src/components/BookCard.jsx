@@ -26,7 +26,7 @@ const BookCard = ({ title, books, navigate, getImageUrl }) => {
           >
             <CardContent className="p-0">
               <img
-                src={getImageUrl(book.image)}
+                src={book.image}
                 alt={book.title}
                 loading="lazy"
                 className="w-full"
