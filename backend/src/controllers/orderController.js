@@ -68,6 +68,7 @@ export const GetOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user.id })
       .populate("items.bookId", "title author image")
+      .populate("user", "userName email")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -96,7 +97,10 @@ export const GetOrderById = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    if (order.user._id.toString() !== req.user.id && req.user.role !== "admin") {
+    if (
+      order.user._id.toString() !== req.user.id &&
+      req.user.role !== "admin"
+    ) {
       return res.status(403).json({ message: "Not Authorized" });
     }
 
@@ -109,7 +113,6 @@ export const GetOrderById = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
-
 
 // Get all orders (Admin only)
 export const GetAllOrders = async (req, res) => {
@@ -136,7 +139,13 @@ export const UpdateOrderStatus = async (req, res) => {
     const { status } = req.body;
 
     // ✅ validate status
-    const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
+    const validStatuses = [
+      "pending",
+      "processing",
+      "shipped",
+      "delivered",
+      "cancelled",
+    ];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
     }
