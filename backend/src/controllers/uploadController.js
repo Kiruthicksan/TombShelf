@@ -6,30 +6,33 @@ export const uploadImage = (req, res) => {
 
     console.log("📸 Uploaded file info:", req.file);
 
-   
     let imageUrl;
 
-    if (process.env.NODE_ENV === 'production') {
-     
+    if (process.env.NODE_ENV === "production") {
       imageUrl = req.file.path;
-      
-      
-      if (!imageUrl.startsWith('http')) {
-        console.error('❌ Expected Cloudinary URL in production, got:', imageUrl);
-        return res.status(500).json({ error: 'Image upload configuration error' });
+
+      console.log("🧠 NODE_ENV:", process.env.NODE_ENV);
+      console.log("📸 req.file.path:", req.file.path);
+
+      if (!imageUrl.startsWith("http")) {
+        console.error(
+          "❌ Expected Cloudinary URL in production, got:",
+          imageUrl
+        );
+        return res
+          .status(500)
+          .json({ error: "Image upload configuration error" });
       }
     } else {
-     
       imageUrl = `/uploads/${req.file.filename}`;
     }
 
     console.log("🖼️ Final image URL:", imageUrl);
 
-    res.json({ 
+    res.json({
       success: true,
-      imageUrl: imageUrl
+      imageUrl: imageUrl,
     });
-
   } catch (err) {
     console.error("Upload error:", err);
     res.status(500).json({ error: err.message });

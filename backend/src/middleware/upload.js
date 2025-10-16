@@ -21,12 +21,16 @@ const storage = isProduction
         public_id: (req, file) => `${Date.now()}-${file.originalname}`,
       },
     })
+    
   : multer.diskStorage({
       destination: "uploads/",
       filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
       },
     });
+
+ 
+
 
 const upload = multer({ storage });
 
