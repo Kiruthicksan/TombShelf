@@ -39,7 +39,7 @@ export const CreateNovel = async (req, res) => {
       totalVolumes,
       language,
       ageRating,
-      image: req.file ? `/uploads/${req.file.filename}` : "/uploads/default-cover.jpg",
+      image: req.file.path,
       
       addedBy: req.user.id,
     });
