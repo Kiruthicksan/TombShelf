@@ -128,6 +128,7 @@ const Navbar = () => {
                   <Button
                     onClick={() => navigate("/profile")}
                     variant="destructive"
+                    className= "hidden md:flex"
                   >
                     Welcome{" "}
                     {user.userName.charAt(0).toUpperCase() +
@@ -162,6 +163,7 @@ const Navbar = () => {
         isAuthenticated={isAuthenticated}
         isAdmin={isAdmin}
         isReader = {isReader}
+        user = {user}
       />
     </header>
   );

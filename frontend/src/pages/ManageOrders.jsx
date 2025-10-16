@@ -11,7 +11,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { getImageUrl } from "@/utils/image";
+
 
 const statusColors = {
   pending: "bg-yellow-100 text-yellow-800",
@@ -96,7 +96,7 @@ const AdminOrdersPage = () => {
                         {order.items.map((item) => (
                           <img
                             key={item._id}
-                            src={getImageUrl( item.bookId?.image) || ""}
+                            src={item.bookId?.image}
                             alt={item.bookId?.title || "Book"}
                             className="w-12 h-16 object-cover rounded shadow-sm"
                             title={`${item.bookId?.title || ""} x${item.quantity}`}
