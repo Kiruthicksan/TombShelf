@@ -33,7 +33,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 app.use("/api", authRoutes);
 app.use("/api", bookRoutes);
-app.use("/api/upload", upload.single('image'), uploadRoute)
+app.use("/api/upload", uploadRoute)
 app.use("/api", orderRoutes);
 app.use("/api", cartRoutes);
 app.use("/api", paymentRoutes);
