@@ -11,8 +11,7 @@ import orderRoutes from "./src/routes/orderRoutes.js";
 import cartRoutes from "./src/routes/cartRoutes.js";
 import paymentRoutes from "./src/routes/paymentRoutes.js";
 import cookieParser from "cookie-parser";
-import path from "path"
-import upload from "./src/middleware/upload.js";
+
 
 const app = express();
 const port = process.env.PORT;
@@ -28,9 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Routes
-if (process.env.NODE_ENV !== 'production') {
-  app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
-}
+
 app.use("/api", authRoutes);
 app.use("/api", bookRoutes);
 app.use("/api", uploadRoute)

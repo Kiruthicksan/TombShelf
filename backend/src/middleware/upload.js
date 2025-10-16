@@ -15,7 +15,7 @@ const storage = new CloudinaryStorage({
   params: {
     folder: "tomeshelf", 
     allowed_formats: ["jpg", "jpeg", "png", "webp"],
-    public_id: (req, file) => `${Date.now()}-${file.originalname}`, // optional: custom filename
+    public_id: (req, file) => `${Date.now()}-${file.originalname}`, 
   },
 });
 

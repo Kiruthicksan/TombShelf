@@ -7,6 +7,11 @@ export const uploadImage = (req, res) => {
    
     const imageUrl = req.file.path;
 
+    if (!imageUrl.startsWith("http")) {
+      console.error("Expected Cloudinary URL, got:", imageUrl);
+      return res.status(500).json({ error: "Upload failed" });
+    }
+
     res.json({
       success: true,
       imageUrl,
